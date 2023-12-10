@@ -1,7 +1,7 @@
 import mime from "mime/lite";
 import path from "path";
 
-import { trimPrefix } from "./string.ts";
+import { trimPrefix } from "./string.js";
 
 /**
  * Get the file mime type. In case the type is not provided, try to guess the

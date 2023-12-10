@@ -1,8 +1,8 @@
 import urljoin from "url-join";
 import parse from "url-parse";
 
-import { trimSuffix } from "./string.ts";
-import { throwValidationError } from "./validation.ts";
+import { trimSuffix } from "./string.js";
+import { throwValidationError } from "./validation.js";
 
 export const DEFAULT_S5_PORTAL_URL = "https://localhost:5522";
 
