@@ -1,0 +1,23 @@
+{
+    "name": "@lumeweb/s5-js",
+    "version": "0.1.0",
+    "type": "module",
+    "devDependencies": {
+        "@lumeweb/node-library-preset": "^0.2.7",
+        "presetter": "*"
+    },
+    "readme": "ERROR: No README data found!",
+    "_id": "@lumeweb/s5-js@0.1.0",
+    "scripts": {
+        "prepare": "presetter bootstrap",
+        "build": "run build",
+        "semantic-release": "semantic-release"
+    },
+    "dependencies": {
+        "@lumeweb/libs5": "^0.1.0-develop.77",
+        "@noble/hashes": "^1.3.2",
+        "axios": "^1.6.2",
+        "tus-js-client": "^4.0.0",
+        "url-join": "^5.0.0"
+    }
+}

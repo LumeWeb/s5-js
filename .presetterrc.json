@@ -1,0 +1,12 @@
+{
+  "preset": [
+    "@lumeweb/node-library-preset"
+  ],
+    "config": {
+        "tsconfig": {
+            "compilerOptions": {
+                "allowImportingTsExtensions": true
+            }
+        }
+    }
+}
