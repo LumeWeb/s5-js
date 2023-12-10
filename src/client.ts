@@ -14,9 +14,9 @@ import {
   uploadSmallFileRequest,
   uploadLargeFileRequest,
 } from "./upload.ts";
-import { downloadFile, getCidUrl, getMetadata } from "./download.ts";
+import { downloadFile, getCidUrl, getMetadata } from "./download.js";
 
-import { defaultPortalUrl, ensureUrl } from "./utils/url.ts";
+import { defaultPortalUrl, ensureUrl } from "./utils/url.js";
 
 import {
   buildRequestHeaders,

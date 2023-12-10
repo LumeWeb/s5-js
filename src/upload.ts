@@ -4,11 +4,11 @@ import { DetailedError, HttpRequest, Upload } from "tus-js-client";
 import { blake3 } from "@noble/hashes/blake3";
 import { Buffer } from "buffer";
 
-import { getFileMimeType } from "./utils/file.ts";
-import { BaseCustomOptions, DEFAULT_BASE_OPTIONS } from "./utils/options.ts";
-import { S5Client } from "./client.ts";
-import type { JsonData } from "./utils/types.ts";
-import { buildRequestHeaders, buildRequestUrl } from "./request.ts";
+import { getFileMimeType } from "./utils/file.js";
+import { BaseCustomOptions, DEFAULT_BASE_OPTIONS } from "./utils/options.js";
+import { S5Client } from "./client.js";
+import type { JsonData } from "./utils/types.js";
+import { buildRequestHeaders, buildRequestUrl } from "./request.js";
 import { CID_HASH_TYPES, CID_TYPES } from "@lumeweb/libs5";
 
 /**

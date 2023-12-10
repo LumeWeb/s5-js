@@ -1,12 +1,12 @@
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
-import { S5Client } from "./client.ts";
+import { S5Client } from "./client.js";
 import {
   addUrlQuery,
   addUrlSubdomain,
   ensureUrlPrefix,
   makeUrl,
-} from "./utils/url.ts";
+} from "./utils/url.js";
 
 export type Headers = { [key: string]: string };
 

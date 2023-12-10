@@ -1,7 +1,7 @@
 import { ResponseType } from "axios";
 
-import { S5Client } from "./client.ts";
-import { BaseCustomOptions, DEFAULT_BASE_OPTIONS } from "./utils/options.ts";
+import { S5Client } from "./client.js";
+import { BaseCustomOptions, DEFAULT_BASE_OPTIONS } from "./utils/options.js";
 import path from "path";
 
 /**

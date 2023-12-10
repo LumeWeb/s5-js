@@ -1,1 +1,1 @@
-export { S5Client } from "./client.ts";
+export { S5Client } from "./client.js";
