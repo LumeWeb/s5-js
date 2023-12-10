@@ -2,6 +2,7 @@
     "name": "@lumeweb/s5-js",
     "version": "0.1.0",
     "type": "module",
+    "module": "lib/index.js",
     "devDependencies": {
         "@lumeweb/node-library-preset": "^0.2.7",
         "presetter": "*"
