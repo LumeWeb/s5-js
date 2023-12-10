@@ -5,6 +5,7 @@
     "config": {
         "tsconfig": {
             "compilerOptions": {
+                "allowImportingTsExtensions": false,
                 "module": "nodenext"
             }
         }
