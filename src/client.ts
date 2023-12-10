@@ -13,7 +13,7 @@ import {
   uploadSmallFile,
   uploadSmallFileRequest,
   uploadLargeFileRequest,
-} from "./upload.ts";
+} from "./upload.js";
 import { downloadFile, getCidUrl, getMetadata } from "./download.js";
 
 import { defaultPortalUrl, ensureUrl } from "./utils/url.js";
@@ -23,7 +23,7 @@ import {
   buildRequestUrl,
   ExecuteRequestError,
   Headers,
-} from "./request.ts";
+} from "./request.js";
 
 /**
  * Custom client options.
