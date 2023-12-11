@@ -1,3 +1,10 @@
+# [0.1.0-develop.6](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.5...v0.1.0-develop.6) (2023-12-11)
+
+
+### Features
+
+* add downloadData method ([50ed08a](https://git.lumeweb.com/LumeWeb/s5-js/commit/50ed08ac6a23f9fa7e43450c0f8942124fa175cd))
+
 # [0.1.0-develop.5](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.4...v0.1.0-develop.5) (2023-12-11)
 
 
