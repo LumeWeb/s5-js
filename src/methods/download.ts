@@ -20,7 +20,7 @@ export type CustomDownloadOptions = BaseCustomOptions & {
   path?: string;
   range?: string;
   responseType?: ResponseType;
-  subdomain?: boolean;
+  subdomain?: string;
 };
 
 export type CustomGetMetadataOptions = BaseCustomOptions & {
@@ -45,7 +45,7 @@ export const DEFAULT_DOWNLOAD_OPTIONS = {
   path: undefined,
   range: undefined,
   responseType: undefined,
-  subdomain: false,
+  subdomain: "",
 };
 
 const DEFAULT_GET_METADATA_OPTIONS = {
@@ -135,6 +135,35 @@ export async function getMetadata(
     ...opts,
     method: "get",
     extraPath: cid,
+  });
+
+  return response.data;
+}
+
+/**
+ * Downloads in-memory data from a S5 cid.
+ * @param this - S5Client
+ * @param cid - 46-character cid, or a valid cid URL. Can be followed by a path. Note that the cid will not be encoded, so if your path might contain special characters, consider using `customOptions.path`.
+ * @param [customOptions] - Additional settings that can optionally be set.
+ * @returns - The data
+ */
+export async function downloadData(
+  this: S5Client,
+  cid: string,
+  customOptions?: CustomDownloadOptions,
+): Promise<ArrayBuffer> {
+  const opts = {
+    ...DEFAULT_DOWNLOAD_OPTIONS,
+    ...this.customOptions,
+    ...customOptions,
+    download: true,
+  };
+
+  const response = await this.executeRequest({
+    ...opts,
+    method: "get",
+    extraPath: cid,
+    responseType: "arraybuffer",
   });
 
   return response.data;

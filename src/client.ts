@@ -14,7 +14,12 @@ import {
   uploadSmallFileRequest,
   uploadLargeFileRequest,
 } from "./methods/upload.js";
-import { downloadFile, getCidUrl, getMetadata } from "./methods/download.js";
+import {
+  downloadData,
+  downloadFile,
+  getCidUrl,
+  getMetadata,
+} from "./methods/download.js";
 
 import { defaultPortalUrl, ensureUrl } from "./utils/url.js";
 
@@ -123,6 +128,7 @@ export class S5Client {
   // Download
 
   downloadFile = downloadFile;
+  downloadData = downloadData;
   getCidUrl = getCidUrl;
   getMetadata = getMetadata;
 
