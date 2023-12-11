@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "type": "module",
     "module": "lib/index.js",
+    "main": "lib/index.js",
     "repository": {
         "type": "git",
         "url": "gitea@git.lumeweb.com:LumeWeb/s5-js.git"
