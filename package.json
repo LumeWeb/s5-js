@@ -1,6 +1,6 @@
 {
     "name": "@lumeweb/s5-js",
-    "version": "0.1.0-develop.4",
+    "version": "0.1.0-develop.5",
     "type": "module",
     "module": "lib/index.js",
     "main": "lib/index.js",
