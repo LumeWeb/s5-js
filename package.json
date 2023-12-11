@@ -5,6 +5,7 @@
     "module": "lib/index.js",
     "devDependencies": {
         "@lumeweb/node-library-preset": "^0.2.7",
+        "@types/ws": "^8.5.10",
         "presetter": "*"
     },
     "readme": "ERROR: No README data found!",
@@ -15,9 +16,10 @@
         "semantic-release": "semantic-release"
     },
     "dependencies": {
-        "@lumeweb/libs5": "^0.1.0-develop.77",
+        "@lumeweb/libs5": "^0.1.0-develop.78",
         "@noble/hashes": "^1.3.2",
         "axios": "^1.6.2",
+        "isomorphic-ws": "^5.0.0",
         "tus-js-client": "^4.0.0",
         "url-join": "^5.0.0"
     },

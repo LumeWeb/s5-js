@@ -24,6 +24,7 @@ import {
   ExecuteRequestError,
   Headers,
 } from "./request.js";
+import { subscribeToEntry } from "./methods/registry.js";
 
 /**
  * Custom client options.
@@ -124,6 +125,9 @@ export class S5Client {
   downloadFile = downloadFile;
   getCidUrl = getCidUrl;
   getMetadata = getMetadata;
+
+  // Registry
+  subscribeToEntry = subscribeToEntry;
 
   /**
    * The S5 Client which can be used to access S5-net.
@@ -266,36 +270,6 @@ export class S5Client {
 
       throw e;
     }
-  }
-
-  // ===============
-  // Private Methods
-  // ===============
-
-  /**
-   * Gets the current server URL for the portal. You should generally use
-   * `portalUrl` instead - this method can be used for detecting whether the
-   * current URL is a server URL.
-   *
-   * @returns - The portal server URL.
-   */
-  protected async resolvePortalServerUrl(): Promise<string> {
-    const response = await this.executeRequest({
-      ...this.customOptions,
-      method: "head",
-      url: this.initialPortalUrl,
-    });
-
-    if (!response.headers) {
-      throw new Error(
-        "Did not get 'headers' in response despite a successful request. Please try again and report this issue to the devs if it persists.",
-      );
-    }
-    const portalUrl = response.headers["s5-server-api"];
-    if (!portalUrl) {
-      throw new Error("Could not get server portal URL for the given portal");
-    }
-    return portalUrl;
   }
 
   /**

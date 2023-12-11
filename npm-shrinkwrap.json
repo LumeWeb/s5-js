@@ -8,14 +8,16 @@
             "name": "@lumeweb/s5-js",
             "version": "0.1.0",
             "dependencies": {
-                "@lumeweb/libs5": "^0.1.0-develop.77",
+                "@lumeweb/libs5": "^0.1.0-develop.78",
                 "@noble/hashes": "^1.3.2",
                 "axios": "^1.6.2",
+                "isomorphic-ws": "^5.0.0",
                 "tus-js-client": "^4.0.0",
                 "url-join": "^5.0.0"
             },
             "devDependencies": {
                 "@lumeweb/node-library-preset": "^0.2.7",
+                "@types/ws": "^8.5.10",
                 "presetter": "*"
             }
         },
@@ -1786,9 +1788,9 @@
             }
         },
         "node_modules/@lumeweb/libs5": {
-            "version": "0.1.0-develop.77",
-            "resolved": "https://registry.npmjs.org/@lumeweb/libs5/-/libs5-0.1.0-develop.77.tgz",
-            "integrity": "sha512-CDq5rhFFpLWouHIQCrc+VXO73ZXnIOOq3DoUzHJonqsUpQ2dBOZFJwfkumWVwlHIaEXHbfaRUrq6CCpE86L9vQ==",
+            "version": "0.1.0-develop.78",
+            "resolved": "https://registry.npmjs.org/@lumeweb/libs5/-/libs5-0.1.0-develop.78.tgz",
+            "integrity": "sha512-7ippBR7x9KbhkEjoMWPYZHJmmVxqeO2LvtAN+gJdj74NiAVujsKC1S3u5sXAeXyHdQ4Grsl8ClUfDumSirkdXg==",
             "dependencies": {
                 "@noble/curves": "^1.1.0",
                 "@noble/hashes": "^1.3.1",
@@ -3513,7 +3515,6 @@
             "resolved": "https://registry.npmjs.org/@types/node/-/node-20.10.4.tgz",
             "integrity": "sha512-D08YG6rr8X90YB56tSIuBaddy/UXAA9RKJoFvrsnogAum/0pmjkgi4+2nx96A330FmioegBWmEYQ+syqCFaveg==",
             "dev": true,
-            "peer": true,
             "dependencies": {
                 "undici-types": "~5.26.4"
             }
@@ -3551,6 +3552,15 @@
             "integrity": "sha512-7NQmHra/JILCd1QqpSzl8+mJRc8ZHz3uDm8YV1Ks9IhK0epEiTw8aIErbvH9PI+6XbqhyIQy3462nEsn7UVzjQ==",
             "dev": true,
             "peer": true
+        },
+        "node_modules/@types/ws": {
+            "version": "8.5.10",
+            "resolved": "https://registry.npmjs.org/@types/ws/-/ws-8.5.10.tgz",
+            "integrity": "sha512-vmQSUcfalpIq0R9q7uTo2lXs6eGIpt9wtnLdMv9LVpIjCA/+ufZRozlVoVelIYixx1ugCBKDhn89vnsEGOCx9A==",
+            "dev": true,
+            "dependencies": {
+                "@types/node": "*"
+            }
         },
         "node_modules/@types/yargs": {
             "version": "17.0.32",
@@ -9233,6 +9243,14 @@
             "resolved": "https://registry.npmjs.org/isexe/-/isexe-2.0.0.tgz",
             "integrity": "sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==",
             "dev": true
+        },
+        "node_modules/isomorphic-ws": {
+            "version": "5.0.0",
+            "resolved": "https://registry.npmjs.org/isomorphic-ws/-/isomorphic-ws-5.0.0.tgz",
+            "integrity": "sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==",
+            "peerDependencies": {
+                "ws": "*"
+            }
         },
         "node_modules/issue-parser": {
             "version": "6.0.0",
@@ -19658,8 +19676,7 @@
             "version": "5.26.5",
             "resolved": "https://registry.npmjs.org/undici-types/-/undici-types-5.26.5.tgz",
             "integrity": "sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==",
-            "dev": true,
-            "peer": true
+            "dev": true
         },
         "node_modules/unicorn-magic": {
             "version": "0.1.0",
