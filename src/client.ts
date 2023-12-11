@@ -13,8 +13,8 @@ import {
   uploadSmallFile,
   uploadSmallFileRequest,
   uploadLargeFileRequest,
-} from "./upload.js";
-import { downloadFile, getCidUrl, getMetadata } from "./download.js";
+} from "./methods/upload.js";
+import { downloadFile, getCidUrl, getMetadata } from "./methods/download.js";
 
 import { defaultPortalUrl, ensureUrl } from "./utils/url.js";
 
