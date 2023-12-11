@@ -3,6 +3,10 @@
     "version": "0.1.0",
     "type": "module",
     "module": "lib/index.js",
+    "repository": {
+        "type": "git",
+        "url": "gitea@git.lumeweb.com:LumeWeb/s5-js.git"
+    },
     "devDependencies": {
         "@lumeweb/node-library-preset": "^0.2.7",
         "@types/ws": "^8.5.10",
