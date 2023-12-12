@@ -184,7 +184,7 @@ export async function getEntry(
     const ret = await this.executeRequest({
       ...opts,
       endpointPath: opts.endpointGetEntry,
-      method: "post",
+      method: "get",
       data: {
         pk: base64urlEncode(publicKey),
       },
