@@ -90,6 +90,8 @@ export async function subscribeToEntry(
   };
 }
 
+const base64urlEncode = (d: Uint8Array) => base64url.encode(d).substring(1);
+
 export async function publishEntry(
   this: S5Client,
   signedEntry: SignedRegistryEntry,
@@ -115,10 +117,10 @@ export async function publishEntry(
     endpointPath: opts.endpointPublishEntry,
     method: "post",
     data: {
-      pk: base64url.encode(signedEntry.pk),
+      pk: base64urlEncode(signedEntry.pk),
       revision: signedEntry.revision,
-      data: base64url.encode(signedEntry.data),
-      signature: base64url.encode(signedEntry.signature),
+      data: base64urlEncode(signedEntry.data),
+      signature: base64urlEncode(signedEntry.signature),
     },
   });
 }
