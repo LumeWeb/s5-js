@@ -1,3 +1,10 @@
+# [0.1.0-develop.20](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.19...v0.1.0-develop.20) (2023-12-12)
+
+
+### Bug Fixes
+
+* ensure we prefix the CID ed22519 type to the registry pubkey ([e4dc098](https://git.lumeweb.com/LumeWeb/s5-js/commit/e4dc0985471747404d82b434f9b8edc97bf0ee1b))
+
 # [0.1.0-develop.19](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.18...v0.1.0-develop.19) (2023-12-12)
 
 # [0.1.0-develop.18](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.17...v0.1.0-develop.18) (2023-12-12)
