@@ -1,3 +1,11 @@
+# [0.1.0-develop.9](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.8...v0.1.0-develop.9) (2023-12-12)
+
+
+### Features
+
+* add createEntry ([02eefe4](https://git.lumeweb.com/LumeWeb/s5-js/commit/02eefe442cc8694898b0989dd8f0b6d15fb32b0e))
+* add publishEntry ([5c19245](https://git.lumeweb.com/LumeWeb/s5-js/commit/5c19245b4bfb75ece2c7ffa3153fbf49bc70e602))
+
 # [0.1.0-develop.8](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.7...v0.1.0-develop.8) (2023-12-12)
 
 
