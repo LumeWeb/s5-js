@@ -1,3 +1,10 @@
+# [0.1.0-develop.14](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.13...v0.1.0-develop.14) (2023-12-12)
+
+
+### Bug Fixes
+
+* need to strip off multiformats prefix ([502c8fb](https://git.lumeweb.com/LumeWeb/s5-js/commit/502c8fb0795986b0a488ad3684c1c23f0b807a40))
+
 # [0.1.0-develop.13](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.12...v0.1.0-develop.13) (2023-12-12)
 
 
