@@ -1,3 +1,10 @@
+# [0.1.0-develop.13](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.12...v0.1.0-develop.13) (2023-12-12)
+
+
+### Bug Fixes
+
+* Revert "fix: use base64urlpad" ([74407cf](https://git.lumeweb.com/LumeWeb/s5-js/commit/74407cf9a15c5c846592f3929646cdcbba98f032))
+
 # [0.1.0-develop.12](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.11...v0.1.0-develop.12) (2023-12-12)
 
 
