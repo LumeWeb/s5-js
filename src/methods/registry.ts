@@ -4,9 +4,16 @@ import { ensureBytes } from "@noble/curves/abstract/utils";
 
 import WS from "isomorphic-ws";
 import { buildRequestUrl } from "#request.js";
-import { Packer, SignedRegistryEntry } from "@lumeweb/libs5";
+import {
+  CID,
+  createKeyPair,
+  KeyPairEd25519,
+  Packer,
+  SignedRegistryEntry,
+} from "@lumeweb/libs5";
 import {
   deserializeRegistryEntry,
+  signRegistryEntry,
   verifyRegistryEntry,
 } from "@lumeweb/libs5/lib/service/registry.js";
 import { Buffer } from "buffer";
@@ -114,4 +121,23 @@ export async function publishEntry(
       signature: base64url.encode(signedEntry.signature),
     },
   });
+}
+
+export async function createEntry(
+  this: S5Client,
+  sk: Uint8Array | KeyPairEd25519,
+  cid: CID,
+  revision = 0,
+) {
+  if (sk instanceof Uint8Array) {
+    sk = createKeyPair(sk);
+  }
+
+  const entry = {
+    kp: sk,
+    data: cid.toBytes(),
+    revision,
+  };
+
+  return this.publishEntry(signRegistryEntry(entry));
 }

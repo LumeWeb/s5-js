@@ -31,7 +31,11 @@ import {
   ExecuteRequestError,
   Headers,
 } from "./request.js";
-import { publishEntry, subscribeToEntry } from "./methods/registry.js";
+import {
+  createEntry,
+  publishEntry,
+  subscribeToEntry,
+} from "./methods/registry.js";
 
 /**
  * Custom client options.
@@ -138,6 +142,7 @@ export class S5Client {
   // Registry
   subscribeToEntry = subscribeToEntry;
   publishEntry = publishEntry;
+  createEntry = createEntry;
 
   /**
    * The S5 Client which can be used to access S5-net.
