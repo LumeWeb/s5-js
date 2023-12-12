@@ -137,27 +137,34 @@ export async function createEntry(
     sk = createKeyPair(sk);
   }
 
+  let existing = true;
   let entry = await this.getEntry(sk.publicKey);
 
   if (!entry) {
+    existing = false;
     entry = {
-      pk: sk,
+      pk: sk.publicKey,
       data: cid.toRegistryEntry(),
       revision,
     } as unknown as SignedRegistryEntry;
-  } else {
-    if (!equalBytes(sk.publicKey, entry.pk)) {
-      throwValidationError(
-        "entry.pk", // name of the variable
-        Buffer.from(entry.pk).toString("hex"), // actual value
-        "result", // valueKind (assuming it's a function parameter)
-        Buffer.from(sk.publicKey).toString("hex"), // expected description
-      );
+  }
+
+  if (!equalBytes(sk.publicKey, entry.pk)) {
+    throwValidationError(
+      "entry.pk", // name of the variable
+      Buffer.from(entry.pk).toString("hex"), // actual value
+      "result", // valueKind (assuming it's a function parameter)
+      Buffer.from(sk.publicKey).toString("hex"), // expected description
+    );
+  }
+
+  if (existing) {
+    if (equalBytes(entry.data, cid.toRegistryEntry())) {
+      return entry;
     }
 
     entry.revision++;
   }
-
   const signedEntry = signRegistryEntry({
     kp: sk,
     data: entry.data,
