@@ -13,6 +13,8 @@ import {
   uploadSmallFile,
   uploadSmallFileRequest,
   uploadLargeFileRequest,
+  uploadWebapp,
+  uploadWebappRequest,
 } from "./methods/upload.js";
 import {
   downloadData,
@@ -124,7 +126,8 @@ export class S5Client {
   protected uploadLargeFileRequest = uploadLargeFileRequest;
   uploadDirectory = uploadDirectory;
   protected uploadDirectoryRequest = uploadDirectoryRequest;
-
+  protected uploadWebappRequest = uploadWebappRequest;
+  uploadWebapp = uploadWebapp;
   // Download
 
   downloadFile = downloadFile;

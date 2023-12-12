@@ -401,6 +401,64 @@ export async function uploadDirectoryRequest(
   });
 }
 
+export async function uploadWebapp(
+  this: S5Client,
+  directory: Record<string, File>,
+  customOptions?: CustomUploadOptions,
+): Promise<UploadRequestResponse> {
+  const response = await this.uploadWebappRequest(directory, customOptions);
+
+  return { cid: response.data.cid };
+}
+
+/**
+ * Makes a request to upload a directory to S5-net.
+ * @param this - S5Client
+ * @param directory - File objects to upload, indexed by their path strings.
+ * @param [customOptions] - Additional settings that can optionally be set.
+ * @param [customOptions.endpointPath] - The relative URL path of the portal endpoint to contact.
+ * @returns - The upload response.
+ * @throws - Will throw if the input filename is not a string.
+ */
+export async function uploadWebappRequest(
+  this: S5Client,
+  directory: Record<string, File>,
+  customOptions?: CustomUploadOptions,
+): Promise<AxiosResponse> {
+  const opts = {
+    ...DEFAULT_UPLOAD_OPTIONS,
+    ...this.customOptions,
+    ...customOptions,
+  };
+
+  const formData = new FormData();
+  Object.entries(directory).forEach(([path, file]) => {
+    file = ensureFileObjectConsistency(file as File);
+    formData.append(path, file as File, path);
+  });
+
+  const query: { [key: string]: string | undefined } = { name: "" };
+  if (opts.tryFiles) {
+    query.tryfiles = JSON.stringify(opts.tryFiles);
+  } else {
+    query.tryfiles = JSON.stringify(["index.html"]);
+  }
+
+  if (opts.errorPages) {
+    query.errorpages = JSON.stringify(opts.errorPages);
+  } else {
+    query.errorpages = JSON.stringify({ 404: "/404.html" });
+  }
+
+  return await this.executeRequest({
+    ...opts,
+    endpointPath: opts.endpointDirectoryUpload,
+    method: "post",
+    data: formData,
+    query,
+  });
+}
+
 /**
  * Sometimes file object might have had the type property defined manually with
  * Object.defineProperty and some browsers (namely firefox) can have problems
