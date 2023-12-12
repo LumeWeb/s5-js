@@ -185,7 +185,7 @@ export async function getEntry(
       ...opts,
       endpointPath: opts.endpointGetEntry,
       method: "get",
-      data: {
+      query: {
         pk: base64urlEncode(publicKey),
       },
     });
