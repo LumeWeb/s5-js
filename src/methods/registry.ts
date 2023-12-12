@@ -137,7 +137,7 @@ export async function createEntry(
 
   const entry = {
     kp: sk,
-    data: cid.toBytes(),
+    data: cid.toRegistryEntry(),
     revision,
   };
 
