@@ -9,7 +9,7 @@ import { BaseCustomOptions, DEFAULT_BASE_OPTIONS } from "../utils/options.js";
 import { S5Client } from "../client.js";
 import type { JsonData } from "../utils/types.js";
 import { buildRequestHeaders, buildRequestUrl } from "../request.js";
-import { CID_HASH_TYPES, CID_TYPES } from "@lumeweb/libs5";
+import { CID, CID_HASH_TYPES, CID_TYPES } from "@lumeweb/libs5";
 
 /**
  * The tus chunk size is (4MiB - encryptionOverhead) * dataPieces, set as default.
@@ -59,7 +59,7 @@ export type CustomUploadOptions = BaseCustomOptions & {
  * @property cid - 46-character cid.
  */
 export type UploadRequestResponse = {
-  cid: string;
+  cid: CID;
 };
 
 /**
@@ -68,7 +68,7 @@ export type UploadRequestResponse = {
  * @property cid - 46-character cid.
  */
 export type UploadTusRequestResponse = {
-  data: { cid: string };
+  data: { cid: CID };
 };
 
 export const DEFAULT_UPLOAD_OPTIONS = {
@@ -134,7 +134,7 @@ export async function uploadSmallFile(
 ): Promise<UploadRequestResponse> {
   const response = await this.uploadSmallFileRequest(file, customOptions);
 
-  return { cid: response.data.cid };
+  return { cid: CID.decode(response.data.cid) };
 }
 
 /**
@@ -319,7 +319,7 @@ export async function uploadLargeFileRequest(
             .replace(/\+/g, "-")
             .replace(/\//g, "_")
             .replace("=", "");
-        const resolveData = { data: { cid: resCid } };
+        const resolveData = { data: { cid: CID.decode(resCid) } };
         resolve(resolveData);
       },
     };
@@ -352,7 +352,7 @@ export async function uploadDirectory(
     customOptions,
   );
 
-  return { cid: response.data.cid };
+  return { cid: CID.decode(response.data.cid) };
 }
 
 /**
@@ -408,7 +408,7 @@ export async function uploadWebapp(
 ): Promise<UploadRequestResponse> {
   const response = await this.uploadWebappRequest(directory, customOptions);
 
-  return { cid: response.data.cid };
+  return { cid: CID.decode(response.data.cid) };
 }
 
 /**
