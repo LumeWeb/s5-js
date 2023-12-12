@@ -1,3 +1,10 @@
+# [0.1.0-develop.8](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.7...v0.1.0-develop.8) (2023-12-12)
+
+
+### Features
+
+* add uploadWebapp ([28d7c30](https://git.lumeweb.com/LumeWeb/s5-js/commit/28d7c30225c400cf87fc6e6e2d7eda6061acb025))
+
 # [0.1.0-develop.7](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.6...v0.1.0-develop.7) (2023-12-12)
 
 # [0.1.0-develop.6](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.5...v0.1.0-develop.6) (2023-12-11)
