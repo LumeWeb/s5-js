@@ -1,3 +1,10 @@
+# [0.1.0-develop.15](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.14...v0.1.0-develop.15) (2023-12-12)
+
+
+### Bug Fixes
+
+* need to use toRegistryEntry ([eb3f2ee](https://git.lumeweb.com/LumeWeb/s5-js/commit/eb3f2ee5c9da7b3b46a5d3d61c5dfed8ecfc167c))
+
 # [0.1.0-develop.14](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.13...v0.1.0-develop.14) (2023-12-12)
 
 
