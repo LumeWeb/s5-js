@@ -1,3 +1,10 @@
+# [0.1.0-develop.18](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.17...v0.1.0-develop.18) (2023-12-12)
+
+
+### Bug Fixes
+
+* need to pass as query, not data ([820cc5b](https://git.lumeweb.com/LumeWeb/s5-js/commit/820cc5bd8924391305ab37e20df53fb9f68924f5))
+
 # [0.1.0-develop.17](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.16...v0.1.0-develop.17) (2023-12-12)
 
 
