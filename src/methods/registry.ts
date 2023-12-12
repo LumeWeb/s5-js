@@ -5,8 +5,13 @@ import { ensureBytes } from "@noble/curves/abstract/utils";
 import WS from "isomorphic-ws";
 import { buildRequestUrl } from "#request.js";
 import { Packer, SignedRegistryEntry } from "@lumeweb/libs5";
-import { deserializeRegistryEntry } from "@lumeweb/libs5/lib/service/registry.js";
+import {
+  deserializeRegistryEntry,
+  verifyRegistryEntry,
+} from "@lumeweb/libs5/lib/service/registry.js";
 import { Buffer } from "buffer";
+import { throwValidationError } from "../utils/validation.js";
+import { base64url } from "multiformats/bases/base64";
 export const DEFAULT_GET_ENTRY_OPTIONS = {
   ...DEFAULT_BASE_OPTIONS,
   endpointGetEntry: "/s5/registry",
@@ -23,10 +28,16 @@ export const DEFAULT_SUBSCRIBE_ENTRY_OPTIONS = {
   endpointSubscribeEntry: "/s5/registry/subscription",
 };
 
+export const DEFAULT_PUBLISH_ENTRY_OPTIONS = {
+  ...DEFAULT_BASE_OPTIONS,
+  endpointPublishEntry: "/s5/registry",
+};
+
 export type BaseCustomOptions = CustomClientOptions;
 
 export type CustomRegistryOptions = BaseCustomOptions & {
   endpointSubscribeEntry?: string;
+  endpointPublishEntry?: string;
 };
 
 export async function subscribeToEntry(
@@ -70,4 +81,37 @@ export async function subscribeToEntry(
       socket.close();
     },
   };
+}
+
+export async function publishEntry(
+  this: S5Client,
+  signedEntry: SignedRegistryEntry,
+  customOptions?: CustomRegistryOptions,
+) {
+  const opts = {
+    ...DEFAULT_PUBLISH_ENTRY_OPTIONS,
+    ...this.customOptions,
+    ...customOptions,
+  };
+
+  if (!verifyRegistryEntry(signedEntry)) {
+    throwValidationError(
+      "signedEntry", // name of the variable
+      signedEntry, // actual value
+      "parameter", // valueKind (assuming it's a function parameter)
+      "a valid signed registry entry", // expected description
+    );
+  }
+
+  return await this.executeRequest({
+    ...opts,
+    endpointPath: opts.endpointPublishEntry,
+    method: "post",
+    data: {
+      pk: base64url.encode(signedEntry.pk),
+      revision: signedEntry.revision,
+      data: base64url.encode(signedEntry.data),
+      signature: base64url.encode(signedEntry.signature),
+    },
+  });
 }
