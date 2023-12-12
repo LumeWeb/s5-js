@@ -1,3 +1,10 @@
+# [0.1.0-develop.16](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.15...v0.1.0-develop.16) (2023-12-12)
+
+
+### Features
+
+* add getEntry and update createEntry to use it ([aea2360](https://git.lumeweb.com/LumeWeb/s5-js/commit/aea236067e6011502f6df2ec9856597b9fe5b1a9))
+
 # [0.1.0-develop.15](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.14...v0.1.0-develop.15) (2023-12-12)
 
 
