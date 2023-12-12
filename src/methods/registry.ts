@@ -1,9 +1,9 @@
 import { DEFAULT_BASE_OPTIONS } from "../utils/options.js";
 import { CustomClientOptions, S5Client } from "../client.js";
-import { ensureBytes } from "@noble/curves/abstract/utils";
+import { ensureBytes, equalBytes } from "@noble/curves/abstract/utils";
 
 import WS from "isomorphic-ws";
-import { buildRequestUrl } from "#request.js";
+import { buildRequestUrl, ExecuteRequestError } from "#request.js";
 import {
   CID,
   createKeyPair,
@@ -19,6 +19,7 @@ import {
 import { Buffer } from "buffer";
 import { throwValidationError } from "../utils/validation.js";
 import { base64url } from "multiformats/bases/base64";
+
 export const DEFAULT_GET_ENTRY_OPTIONS = {
   ...DEFAULT_BASE_OPTIONS,
   endpointGetEntry: "/s5/registry",
@@ -91,6 +92,7 @@ export async function subscribeToEntry(
 }
 
 const base64urlEncode = (d: Uint8Array) => base64url.encode(d).substring(1);
+const base64urlDecode = (d: string) => base64url.decode(`u${d}`);
 
 export async function publishEntry(
   this: S5Client,
@@ -135,15 +137,81 @@ export async function createEntry(
     sk = createKeyPair(sk);
   }
 
-  const entry = {
-    kp: sk,
-    data: cid.toRegistryEntry(),
-    revision,
-  };
+  let entry = await this.getEntry(sk.publicKey);
 
-  const signedEntry = signRegistryEntry(entry);
+  if (!entry) {
+    entry = {
+      pk: sk,
+      data: cid.toRegistryEntry(),
+      revision,
+    } as unknown as SignedRegistryEntry;
+  } else {
+    if (!equalBytes(sk.publicKey, entry.pk)) {
+      throwValidationError(
+        "entry.pk", // name of the variable
+        Buffer.from(entry.pk).toString("hex"), // actual value
+        "result", // valueKind (assuming it's a function parameter)
+        Buffer.from(sk.publicKey).toString("hex"), // expected description
+      );
+    }
+
+    entry.revision++;
+  }
+
+  const signedEntry = signRegistryEntry({
+    kp: sk,
+    data: entry.data,
+    revision: entry.revision,
+  });
 
   await this.publishEntry(signedEntry);
 
   return signedEntry;
+}
+
+export async function getEntry(
+  this: S5Client,
+  publicKey: Uint8Array,
+  customOptions?: CustomRegistryOptions,
+) {
+  const opts = {
+    ...DEFAULT_GET_ENTRY_OPTIONS,
+    ...this.customOptions,
+    ...customOptions,
+  };
+
+  try {
+    const ret = await this.executeRequest({
+      ...opts,
+      endpointPath: opts.endpointGetEntry,
+      method: "post",
+      data: {
+        pk: base64urlEncode(publicKey),
+      },
+    });
+
+    const signedEntry = {
+      pk: base64urlDecode(ret.data.pk),
+      revision: ret.data.revision,
+      data: base64urlDecode(ret.data.data),
+      signature: base64urlDecode(ret.data.signature),
+    } as SignedRegistryEntry;
+
+    if (!verifyRegistryEntry(signedEntry)) {
+      throwValidationError(
+        "signedEntry", // name of the variable
+        signedEntry, // actual value
+        "result", // valueKind (assuming it's a function parameter)
+        "a valid signed registry entry", // expected description
+      );
+    }
+
+    return signedEntry;
+  } catch (e) {
+    if ((e as ExecuteRequestError).responseStatus === 404) {
+      return undefined;
+    }
+
+    throw e;
+  }
 }

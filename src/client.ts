@@ -33,6 +33,7 @@ import {
 } from "./request.js";
 import {
   createEntry,
+  getEntry,
   publishEntry,
   subscribeToEntry,
 } from "./methods/registry.js";
@@ -143,6 +144,7 @@ export class S5Client {
   subscribeToEntry = subscribeToEntry;
   publishEntry = publishEntry;
   createEntry = createEntry;
+  getEntry = getEntry;
 
   /**
    * The S5 Client which can be used to access S5-net.
