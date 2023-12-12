@@ -139,5 +139,9 @@ export async function createEntry(
     revision,
   };
 
-  return this.publishEntry(signRegistryEntry(entry));
+  const signedEntry = signRegistryEntry(entry);
+
+  await this.publishEntry(signedEntry);
+
+  return signedEntry;
 }
