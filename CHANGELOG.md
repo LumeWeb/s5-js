@@ -1,3 +1,10 @@
+# [0.1.0-develop.17](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.16...v0.1.0-develop.17) (2023-12-12)
+
+
+### Bug Fixes
+
+* use get not post ([e24d352](https://git.lumeweb.com/LumeWeb/s5-js/commit/e24d352d4eb6fd5baf16698f11c876e79a3040fd))
+
 # [0.1.0-develop.16](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.15...v0.1.0-develop.16) (2023-12-12)
 
 
