@@ -9,6 +9,7 @@ import {
   createKeyPair,
   KeyPairEd25519,
   Packer,
+  REGISTRY_TYPES,
   SignedRegistryEntry,
 } from "@lumeweb/libs5";
 import {
@@ -19,6 +20,8 @@ import {
 import { Buffer } from "buffer";
 import { throwValidationError } from "../utils/validation.js";
 import { base64url } from "multiformats/bases/base64";
+import { concatBytes } from "@noble/hashes/utils";
+import { CID_HASH_TYPES } from "@lumeweb/libs5/lib/constants.js";
 
 export const DEFAULT_GET_ENTRY_OPTIONS = {
   ...DEFAULT_BASE_OPTIONS,
@@ -60,6 +63,7 @@ export async function subscribeToEntry(
   };
 
   publicKey = ensureBytes("public key", publicKey, 32);
+  publicKey = concatBytes(Uint8Array.from([CID_HASH_TYPES.ED25519]), publicKey);
 
   const url = await buildRequestUrl(this, {
     baseUrl: await this.portalUrl(),
