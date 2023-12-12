@@ -1,3 +1,10 @@
+# [0.1.0-develop.12](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.11...v0.1.0-develop.12) (2023-12-12)
+
+
+### Bug Fixes
+
+* use base64urlpad ([ce47696](https://git.lumeweb.com/LumeWeb/s5-js/commit/ce47696d907513e6b5a78f3c71407e12b90fb952))
+
 # [0.1.0-develop.11](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.10...v0.1.0-develop.11) (2023-12-12)
 
 # [0.1.0-develop.10](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.9...v0.1.0-develop.10) (2023-12-12)
