@@ -18,7 +18,7 @@ import {
 } from "@lumeweb/libs5/lib/service/registry.js";
 import { Buffer } from "buffer";
 import { throwValidationError } from "../utils/validation.js";
-import { base64url } from "multiformats/bases/base64";
+import { base64urlpad } from "multiformats/bases/base64";
 export const DEFAULT_GET_ENTRY_OPTIONS = {
   ...DEFAULT_BASE_OPTIONS,
   endpointGetEntry: "/s5/registry",
@@ -115,10 +115,10 @@ export async function publishEntry(
     endpointPath: opts.endpointPublishEntry,
     method: "post",
     data: {
-      pk: base64url.encode(signedEntry.pk),
+      pk: base64urlpad.encode(signedEntry.pk),
       revision: signedEntry.revision,
-      data: base64url.encode(signedEntry.data),
-      signature: base64url.encode(signedEntry.signature),
+      data: base64urlpad.encode(signedEntry.data),
+      signature: base64urlpad.encode(signedEntry.signature),
     },
   });
 }
