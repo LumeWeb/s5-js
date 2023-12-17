@@ -88,26 +88,12 @@ export type RequestConfig = CustomClientOptions & {
   transformResponse?: (data: string) => Record<string, unknown>;
 };
 
-// Add a response interceptor so that we always return an error of type
-// `ExecuteResponseError`.
-axios.interceptors.response.use(
-  function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger.
-    // Do something with response data.
-    return response;
-  },
-  function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error.
-    return Promise.reject(ExecuteRequestError.From(error as AxiosError));
-  },
-);
-
 /**
  * The S5 Client which can be used to access S5-net.
  */
 export class S5Client {
   customOptions: CustomClientOptions;
+  private httpClient = axios.create();
 
   // The initial portal URL, the value of `defaultPortalUrl()` if `new
   // S5Client` is called without a given portal. This initial URL is used to
@@ -163,6 +149,21 @@ export class S5Client {
     }
     this.initialPortalUrl = initialPortalUrl;
     this.customOptions = customOptions;
+
+    // Add a response interceptor so that we always return an error of type
+    // `ExecuteResponseError`.
+    this.httpClient.interceptors.response.use(
+      function (response) {
+        // Any status code that lie within the range of 2xx cause this function to trigger.
+        // Do something with response data.
+        return response;
+      },
+      function (error) {
+        // Any status codes that falls outside the range of 2xx cause this function to trigger
+        // Do something with response error.
+        return Promise.reject(ExecuteRequestError.From(error as AxiosError));
+      },
+    );
   }
 
   /* istanbul ignore next */
@@ -274,7 +275,7 @@ export class S5Client {
     // NOTE: The error type is `ExecuteRequestError`. We set up a response
     // interceptor above that does the conversion from `AxiosError`.
     try {
-      return await axios(params);
+      return await this.httpClient.request(params);
     } catch (e) {
       // If `loginFn` is set and we get an Unauthorized response...
       if (config.loginFn && (e as ExecuteRequestError).responseStatus === 401) {
