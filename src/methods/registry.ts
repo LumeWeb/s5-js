@@ -163,11 +163,13 @@ export async function createEntry(
   }
 
   if (existing) {
-    if (equalBytes(entry.data, cid.toRegistryEntry())) {
+    const newEntry = cid.toRegistryEntry();
+    if (equalBytes(entry.data, newEntry)) {
       return entry;
     }
 
     entry.revision++;
+    entry.data = newEntry;
   }
   const signedEntry = signRegistryEntry({
     kp: sk,
