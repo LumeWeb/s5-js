@@ -138,7 +138,7 @@ export async function getMetadata(
     extraPath: cid,
   });
 
-  return response.data;
+  return { metadata: response.data };
 }
 
 /**
