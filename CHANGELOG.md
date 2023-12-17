@@ -1,3 +1,10 @@
+# [0.1.0-develop.22](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.21...v0.1.0-develop.22) (2023-12-17)
+
+
+### Bug Fixes
+
+* need to pass endpointPath ([bf23047](https://git.lumeweb.com/LumeWeb/s5-js/commit/bf230478b792860ce16b68b976853d9a7d828d0f))
+
 # [0.1.0-develop.21](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.20...v0.1.0-develop.21) (2023-12-17)
 
 
