@@ -1,3 +1,10 @@
+# [0.1.0-develop.21](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.20...v0.1.0-develop.21) (2023-12-17)
+
+
+### Bug Fixes
+
+* on existing entry, need to update the entry data ([389a15e](https://git.lumeweb.com/LumeWeb/s5-js/commit/389a15eef41c941e36d2b08ca47c775f13bbba55))
+
 # [0.1.0-develop.20](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.19...v0.1.0-develop.20) (2023-12-12)
 
 
