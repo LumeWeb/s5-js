@@ -134,6 +134,7 @@ export async function getMetadata(
   const response = await this.executeRequest({
     ...opts,
     method: "get",
+    endpointPath: opts.endpointGetMetadata,
     extraPath: cid,
   });
 
