@@ -1,3 +1,10 @@
+# [0.1.0-develop.24](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.23...v0.1.0-develop.24) (2023-12-18)
+
+
+### Bug Fixes
+
+* ensure we are using a ws protocol ([bb7c7dc](https://git.lumeweb.com/LumeWeb/s5-js/commit/bb7c7dcece26e4ff7de338ca2bf7bc12046edebe))
+
 # [0.1.0-develop.23](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.22...v0.1.0-develop.23) (2023-12-17)
 
 
