@@ -70,7 +70,9 @@ export async function subscribeToEntry(
     endpointPath: opts.endpointSubscribeEntry,
   });
 
-  const socket = new WS(url);
+  const wsUrl = url.replace(/^http/, "ws");
+
+  const socket = new WS(wsUrl);
 
   socket.once("open", () => {
     const packer = new Packer();
