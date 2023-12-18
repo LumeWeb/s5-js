@@ -1,3 +1,10 @@
+# [0.1.0-develop.23](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.22...v0.1.0-develop.23) (2023-12-17)
+
+
+### Bug Fixes
+
+* return GetMetadataResponse ([fcdd42f](https://git.lumeweb.com/LumeWeb/s5-js/commit/fcdd42f2a32281ba4dabf4c548657b40b9b4a4ef))
+
 # [0.1.0-develop.22](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.21...v0.1.0-develop.22) (2023-12-17)
 
 
