@@ -1,3 +1,10 @@
+# [0.1.0-develop.26](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.25...v0.1.0-develop.26) (2023-12-28)
+
+
+### Bug Fixes
+
+* use on, once is not available in all environments ([d78ad5e](https://git.lumeweb.com/LumeWeb/s5-js/commit/d78ad5eb2996dc11cc67cf2e4ff1e1b3b62e1519))
+
 # [0.1.0-develop.25](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.24...v0.1.0-develop.25) (2023-12-28)
 
 # [0.1.0-develop.24](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.23...v0.1.0-develop.24) (2023-12-18)
