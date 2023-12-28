@@ -74,7 +74,7 @@ export async function subscribeToEntry(
 
   const socket = new WS(wsUrl);
 
-  socket.once("open", () => {
+  socket.on("open", () => {
     const packer = new Packer();
     packer.pack(2);
     packer.pack(publicKey);
