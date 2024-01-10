@@ -74,7 +74,7 @@ export async function subscribeToEntry(
 
   const socket = new WS(wsUrl);
 
-  socket.on("open", () => {
+  socket.addEventListener("open", () => {
     const packer = new Packer();
     packer.pack(2);
     packer.pack(publicKey);
@@ -84,8 +84,8 @@ export async function subscribeToEntry(
 
   return {
     listen(cb: (entry: SignedRegistryEntry) => void) {
-      socket.on("message", (data) => {
-        cb(deserializeRegistryEntry(new Uint8Array(data as Buffer)));
+      socket.addEventListener("message", (data) => {
+        cb(deserializeRegistryEntry(new Uint8Array(data.data as Buffer)));
       });
     },
     end() {
