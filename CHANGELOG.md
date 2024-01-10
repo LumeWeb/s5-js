@@ -1,3 +1,10 @@
+# [0.1.0-develop.29](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.28...v0.1.0-develop.29) (2024-01-10)
+
+
+### Bug Fixes
+
+* set binaryType ([d1ce4a1](https://git.lumeweb.com/LumeWeb/s5-js/commit/d1ce4a1ae039dba8ae5497d6106730c44801b83e))
+
 # [0.1.0-develop.28](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.27...v0.1.0-develop.28) (2024-01-10)
 
 
