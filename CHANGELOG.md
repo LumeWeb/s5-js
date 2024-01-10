@@ -1,3 +1,10 @@
+# [0.1.0-develop.28](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.27...v0.1.0-develop.28) (2024-01-10)
+
+
+### Bug Fixes
+
+* use addEventListener, on is not available in all environments ([c4c0a94](https://git.lumeweb.com/LumeWeb/s5-js/commit/c4c0a947a93c60ea2364b7de9b975d6dccc188cc))
+
 # [0.1.0-develop.27](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.26...v0.1.0-develop.27) (2023-12-28)
 
 # [0.1.0-develop.26](https://git.lumeweb.com/LumeWeb/s5-js/compare/v0.1.0-develop.25...v0.1.0-develop.26) (2023-12-28)
