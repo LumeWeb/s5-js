@@ -73,6 +73,7 @@ export async function subscribeToEntry(
   const wsUrl = url.replace(/^http/, "ws");
 
   const socket = new WS(wsUrl);
+  socket.binaryType = "arraybuffer";
 
   socket.addEventListener("open", () => {
     const packer = new Packer();
