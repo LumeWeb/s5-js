@@ -157,3 +157,41 @@ export async function downloadProof(
 ): Promise<ArrayBuffer> {
   return this.downloadData(`${cid}.obao`, customOptions);
 }
+
+/**
+ * Downloads a blob from the given cid. This will capture a 301 redirect to the actual blob location, then download the blob.
+ * @param this - S5Client
+ * @param cid - 46-character cid, or a valid cid URL.
+ * @param [customOptions] - Additional settings that can optionally be set.
+ * @returns - The data
+ */
+export async function downloadBlob(
+  this: S5Client,
+  cid: string,
+  customOptions: CustomDownloadOptions = {},
+): Promise<ArrayBuffer> {
+  const config = optionsToConfig(this, DEFAULT_DOWNLOAD_OPTIONS, customOptions);
+
+  let location: string | null = null;
+
+  await getS5BlobCid(cid, {
+    ...config,
+    responseType: "arraybuffer",
+    beforeRedirect: (config, responseDetails) => {
+      location = responseDetails.headers["location"];
+    },
+  });
+
+  if (!location) {
+    throw new Error("Failed to download blob");
+  }
+
+  return await customInstance<ArrayBuffer>(
+    {
+      url: `/s5/blob/${cid}`,
+      method: "GET",
+      responseType: "arraybuffer",
+    },
+    config,
+  );
+}
