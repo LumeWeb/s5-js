@@ -4,8 +4,13 @@ import { S5Client } from "../client.js";
 import { CustomClientOptions, optionsToConfig } from "../utils/options.js";
 import path from "path";
 import { DEFAULT_UPLOAD_OPTIONS } from "#methods/upload.js";
-import { getS5DownloadCid, getS5MetadataCid } from "#generated/index.js";
+import {
+  getS5BlobCid,
+  getS5DownloadCid,
+  getS5MetadataCid,
+} from "#generated/index.js";
 import { addUrlQuery } from "#utils/url.js";
+import { customInstance } from "#axios.js";
 
 /**
  * Custom download options.
@@ -135,12 +140,7 @@ export async function downloadData(
 
   const config = optionsToConfig(this, DEFAULT_DOWNLOAD_OPTIONS, customOptions);
 
-  return await (
-    await getS5DownloadCid(cid, {
-      ...config,
-      responseType: "arraybuffer",
-    })
-  ).arrayBuffer();
+  return await (await getS5DownloadCid(cid, config)).arrayBuffer();
 }
 
 /**
