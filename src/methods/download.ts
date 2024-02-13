@@ -142,3 +142,18 @@ export async function downloadData(
     })
   ).arrayBuffer();
 }
+
+/**
+ * Downloads a proof for the given cid.
+ * @param this - S5Client
+ * @param cid - 46-character cid, or a valid cid URL.
+ * @param [customOptions] - Additional settings that can optionally be set.
+ * @returns - The data
+ */
+export async function downloadProof(
+  this: S5Client,
+  cid: string,
+  customOptions: CustomDownloadOptions = {},
+): Promise<ArrayBuffer> {
+  return this.downloadData(`${cid}.obao`, customOptions);
+}
