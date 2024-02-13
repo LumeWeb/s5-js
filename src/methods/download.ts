@@ -44,7 +44,6 @@ export type MetadataResult = {
 export const DEFAULT_DOWNLOAD_OPTIONS = {
   range: undefined,
   responseType: undefined,
-  subdomain: "",
 } as CustomDownloadOptions;
 
 const DEFAULT_GET_METADATA_OPTIONS = {};
