@@ -40,7 +40,7 @@ export const DEFAULT_DOWNLOAD_OPTIONS = {
   range: undefined,
   responseType: undefined,
   subdomain: "",
-};
+} as CustomDownloadOptions;
 
 const DEFAULT_GET_METADATA_OPTIONS = {};
 
@@ -133,7 +133,7 @@ export async function downloadData(
     download: true,
   };
 
-  const config = optionsToConfig(this, DEFAULT_UPLOAD_OPTIONS, customOptions);
+  const config = optionsToConfig(this, DEFAULT_DOWNLOAD_OPTIONS, customOptions);
 
   return await (
     await getS5DownloadCid(cid, {
