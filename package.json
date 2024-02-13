@@ -16,8 +16,7 @@
     "readme": "ERROR: No README data found!",
     "scripts": {
         "prepare": "presetter bootstrap",
-        "build": "run build",
-        "semantic-release": "semantic-release"
+        "build": "run build"
     },
     "dependencies": {
         "@lumeweb/libs5": "^0.1.0-develop.82",
