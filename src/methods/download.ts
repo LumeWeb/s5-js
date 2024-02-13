@@ -5,6 +5,7 @@ import { CustomClientOptions, optionsToConfig } from "../utils/options.js";
 import path from "path";
 import { DEFAULT_UPLOAD_OPTIONS } from "#methods/upload.js";
 import { getS5DownloadCid, getS5MetadataCid } from "#generated/index.js";
+import { addUrlQuery } from "#utils/url.js";
 
 /**
  * Custom download options.
@@ -81,7 +82,10 @@ export async function getCidUrl(
   cid: string,
   customOptions: CustomDownloadOptions = {},
 ): Promise<string> {
-  return path.join(this.portalUrl, cid);
+  const opt = { ...this.customOptions, customOptions };
+  return addUrlQuery(path.join(this.portalUrl, cid), {
+    auth_token: opt.ApiKey,
+  });
 }
 
 /**
