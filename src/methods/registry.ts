@@ -1,9 +1,7 @@
-import { DEFAULT_BASE_OPTIONS } from "../utils/options.js";
-import { CustomClientOptions, S5Client } from "../client.js";
+import { S5Client } from "../client.js";
 import { ensureBytes, equalBytes } from "@noble/curves/abstract/utils";
 
 import WS from "isomorphic-ws";
-import { buildRequestUrl, ExecuteRequestError } from "#request.js";
 import {
   CID,
   createKeyPair,
@@ -22,27 +20,29 @@ import { throwValidationError } from "../utils/validation.js";
 import { base64url } from "multiformats/bases/base64";
 import { concatBytes } from "@noble/hashes/utils";
 import { CID_HASH_TYPES } from "@lumeweb/libs5/lib/constants.js";
+import { CustomClientOptions, optionsToConfig } from "#utils/options.js";
+import { buildRequestUrl } from "#request.js";
+import {
+  getS5Registry,
+  postS5Registry,
+  type RegistrySetRequest,
+} from "#generated/index.js";
+import { DEFAULT_UPLOAD_OPTIONS } from "#methods/upload.js";
+import { AxiosError } from "axios";
 
-export const DEFAULT_GET_ENTRY_OPTIONS = {
-  ...DEFAULT_BASE_OPTIONS,
-  endpointGetEntry: "/s5/registry",
-};
+export const DEFAULT_GET_ENTRY_OPTIONS = {};
 
 export const DEFAULT_SET_ENTRY_OPTIONS = {
-  ...DEFAULT_BASE_OPTIONS,
   endpointSetEntry: "/s5/registry",
-  deleteForever: false,
 };
 
 export const DEFAULT_SUBSCRIBE_ENTRY_OPTIONS = {
-  ...DEFAULT_BASE_OPTIONS,
   endpointSubscribeEntry: "/s5/registry/subscription",
-};
+} as CustomRegistryOptions;
 
 export const DEFAULT_PUBLISH_ENTRY_OPTIONS = {
-  ...DEFAULT_BASE_OPTIONS,
   endpointPublishEntry: "/s5/registry",
-};
+} as CustomRegistryOptions;
 
 export type BaseCustomOptions = CustomClientOptions;
 
@@ -54,7 +54,7 @@ export type CustomRegistryOptions = BaseCustomOptions & {
 export async function subscribeToEntry(
   this: S5Client,
   publicKey: Uint8Array,
-  customOptions?: CustomRegistryOptions,
+  customOptions: CustomRegistryOptions = {},
 ) {
   const opts = {
     ...DEFAULT_SUBSCRIBE_ENTRY_OPTIONS,
@@ -66,7 +66,7 @@ export async function subscribeToEntry(
   publicKey = concatBytes(Uint8Array.from([CID_HASH_TYPES.ED25519]), publicKey);
 
   const url = await buildRequestUrl(this, {
-    baseUrl: await this.portalUrl(),
+    baseUrl: await this.portalUrl,
     endpointPath: opts.endpointSubscribeEntry,
   });
 
@@ -104,13 +104,13 @@ const base64urlDecode = (d: string) => base64url.decode(`u${d}`);
 export async function publishEntry(
   this: S5Client,
   signedEntry: SignedRegistryEntry,
-  customOptions?: CustomRegistryOptions,
+  customOptions: CustomRegistryOptions = {},
 ) {
-  const opts = {
-    ...DEFAULT_PUBLISH_ENTRY_OPTIONS,
-    ...this.customOptions,
-    ...customOptions,
-  };
+  const config = optionsToConfig(
+    this,
+    DEFAULT_PUBLISH_ENTRY_OPTIONS,
+    customOptions,
+  );
 
   if (!verifyRegistryEntry(signedEntry)) {
     throwValidationError(
@@ -121,17 +121,15 @@ export async function publishEntry(
     );
   }
 
-  return await this.executeRequest({
-    ...opts,
-    endpointPath: opts.endpointPublishEntry,
-    method: "post",
-    data: {
+  return postS5Registry(
+    {
       pk: base64urlEncode(signedEntry.pk),
       revision: signedEntry.revision,
       data: base64urlEncode(signedEntry.data),
       signature: base64urlEncode(signedEntry.signature),
     },
-  });
+    config,
+  );
 }
 
 export async function createEntry(
@@ -188,29 +186,27 @@ export async function createEntry(
 export async function getEntry(
   this: S5Client,
   publicKey: Uint8Array,
-  customOptions?: CustomRegistryOptions,
+  customOptions: CustomRegistryOptions = {},
 ) {
-  const opts = {
-    ...DEFAULT_GET_ENTRY_OPTIONS,
-    ...this.customOptions,
-    ...customOptions,
-  };
+  const config = optionsToConfig(
+    this,
+    DEFAULT_GET_ENTRY_OPTIONS,
+    customOptions,
+  );
 
   try {
-    const ret = await this.executeRequest({
-      ...opts,
-      endpointPath: opts.endpointGetEntry,
-      method: "get",
-      query: {
+    const ret = await getS5Registry(
+      {
         pk: base64urlEncode(publicKey),
       },
-    });
+      config,
+    );
 
     const signedEntry = {
-      pk: base64urlDecode(ret.data.pk),
-      revision: ret.data.revision,
-      data: base64urlDecode(ret.data.data),
-      signature: base64urlDecode(ret.data.signature),
+      pk: base64urlDecode(<string>ret.pk),
+      revision: ret.revision,
+      data: base64urlDecode(<string>ret.data),
+      signature: base64urlDecode(<string>ret.signature),
     } as SignedRegistryEntry;
 
     if (!verifyRegistryEntry(signedEntry)) {
@@ -224,7 +220,7 @@ export async function getEntry(
 
     return signedEntry;
   } catch (e) {
-    if ((e as ExecuteRequestError).responseStatus === 404) {
+    if ((e as AxiosError).response?.status === 404) {
       return undefined;
     }
 

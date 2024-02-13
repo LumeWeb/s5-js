@@ -4,30 +4,7 @@ import parse from "url-parse";
 import { trimSuffix } from "./string.js";
 import { throwValidationError } from "./validation.js";
 
-export const DEFAULT_S5_PORTAL_URL = "https://localhost:5522";
-
-/**
- * @deprecated please use DEFAULT_S5_PORTAL_URL.
- */
-export const defaultS5PortalUrl = DEFAULT_S5_PORTAL_URL;
-
 export const URI_S5_PREFIX = "s5://";
-
-/**
- * @deprecated please use URI_S5_PREFIX.
- */
-export const uriS5Prefix = URI_S5_PREFIX;
-
-/**
- * Returns the default portal URL.
- *
- * @returns - The portal URL.
- */
-export function defaultPortalUrl(): string {
-  /* istanbul ignore next */
-  if (typeof window === "undefined") return "/"; // default to path root on ssr
-  return window.location.origin;
-}
 
 /**
  * Adds a subdomain to the given URL.

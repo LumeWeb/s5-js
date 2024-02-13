@@ -5,11 +5,18 @@ import { blake3 } from "@noble/hashes/blake3";
 import { Buffer } from "buffer";
 
 import { getFileMimeType } from "../utils/file.js";
-import { BaseCustomOptions, DEFAULT_BASE_OPTIONS } from "../utils/options.js";
 import { S5Client } from "../client.js";
-import type { JsonData } from "../utils/types.js";
-import { buildRequestHeaders, buildRequestUrl } from "../request.js";
 import { CID, CID_HASH_TYPES, CID_TYPES } from "@lumeweb/libs5";
+import {
+  type BasicUploadResponse,
+  postS5Upload,
+  postS5UploadDirectory,
+  PostS5UploadDirectoryParams,
+  PostS5UploadResult,
+} from "#generated/index.js";
+import { BaseCustomOptions } from "#methods/registry.js";
+import { optionsToConfig } from "#utils/options.js";
+import { buildRequestUrl } from "#request.js";
 
 /**
  * The tus chunk size is (4MiB - encryptionOverhead) * dataPieces, set as default.
@@ -27,25 +34,18 @@ const DEFAULT_TUS_RETRY_DELAYS = [0, 5_000, 15_000, 60_000, 300_000, 600_000];
  */
 const PORTAL_FILE_FIELD_NAME = "file";
 
+const TUS_ENDPOINT = "/s5/upload/tus";
+
 /**
  * Custom upload options.
  *
- * @property [endpointUpload] - The relative URL path of the portal endpoint to contact.
- * @property [endpointDirectoryUpload] - The relative URL path of the portal endpoint to contact for Directorys.
- * @property [endpointLargeUpload] - The relative URL path of the portal endpoint to contact for large uploads.
- * @property [customFilename] - The custom filename to use when uploading files.
  * @property [largeFileSize=32943040] - The size at which files are considered "large" and will be uploaded using the tus resumable upload protocol. This is the size of one chunk by default (32 mib). Note that this does not affect the actual size of chunks used by the protocol.
  * @property [errorPages] - Defines a mapping of error codes and subfiles which are to be served in case we are serving the respective error code. All subfiles referred like this must be defined with absolute paths and must exist.
  * @property [retryDelays=[0, 5_000, 15_000, 60_000, 300_000, 600_000]] - An array or undefined, indicating how many milliseconds should pass before the next attempt to uploading will be started after the transfer has been interrupted. The array's length indicates the maximum number of attempts.
  * @property [tryFiles] - Allows us to set a list of potential subfiles to return in case the requested one does not exist or is a directory. Those subfiles might be listed with relative or absolute paths. If the path is absolute the file must exist.
  */
 export type CustomUploadOptions = BaseCustomOptions & {
-  endpointUpload?: string;
-  endpointDirectoryUpload: string;
-  endpointLargeUpload?: string;
-
-  customFilename?: string;
-  errorPages?: JsonData;
+  errorPages?: Record<string, string>;
   tryFiles?: string[];
 
   // Large files.
@@ -53,39 +53,18 @@ export type CustomUploadOptions = BaseCustomOptions & {
   retryDelays?: number[];
 };
 
-/**
- * The response to an upload request.
- *
- * @property cid - 46-character cid.
- */
-export type UploadRequestResponse = {
-  cid: CID;
-};
-
-/**
- * The response to an upload request.
- *
- * @property cid - 46-character cid.
- */
-export type UploadTusRequestResponse = {
-  data: { cid: CID };
-};
-
 export const DEFAULT_UPLOAD_OPTIONS = {
-  ...DEFAULT_BASE_OPTIONS,
-
-  endpointUpload: "/s5/upload",
-  endpointDirectoryUpload: "/s5/upload/directory",
-  endpointLargeUpload: "/s5/upload/tus",
-
-  customFilename: "",
   errorPages: { 404: "/404.html" },
   tryFiles: ["index.html"],
 
   // Large files.
   largeFileSize: TUS_CHUNK_SIZE,
   retryDelays: DEFAULT_TUS_RETRY_DELAYS,
-};
+} as CustomUploadOptions;
+
+export interface UploadResult {
+  cid: CID;
+}
 
 /**
  * Uploads a file to S5-net.
@@ -93,24 +72,21 @@ export const DEFAULT_UPLOAD_OPTIONS = {
  * @param this - S5Client
  * @param file - The file to upload.
  * @param [customOptions] - Additional settings that can optionally be set.
- * @param [customOptions.endpointUpload="/s5/upload"] - The relative URL path of the portal endpoint to contact for small uploads.
- * @param [customOptions.endpointDirectoryUpload="/s5/upload/directory"] - The relative URL path of the portal endpoint to contact for Directory uploads.
- * @param [customOptions.endpointLargeUpload="/s5/upload/tus"] - The relative URL path of the portal endpoint to contact for large uploads.
  * @returns - The returned cid.
  * @throws - Will throw if the request is successful but the upload response does not contain a complete response.
  */
 export async function uploadFile(
   this: S5Client,
   file: File,
-  customOptions?: CustomUploadOptions,
-): Promise<UploadRequestResponse> {
+  customOptions: CustomUploadOptions = {},
+): Promise<any> {
   const opts = {
     ...DEFAULT_UPLOAD_OPTIONS,
     ...this.customOptions,
     ...customOptions,
-  };
+  } as CustomUploadOptions;
 
-  if (file.size < opts.largeFileSize) {
+  if (file.size < <number>opts?.largeFileSize) {
     return this.uploadSmallFile(file, opts);
   } else {
     return this.uploadLargeFile(file, opts);
@@ -123,18 +99,18 @@ export async function uploadFile(
  * @param this - S5Client
  * @param file - The file to upload.
  * @param [customOptions] - Additional settings that can optionally be set.
- * @param [customOptions.endpointUpload="/s5/upload"] - The relative URL path of the portal endpoint to contact.
- * @returns - The returned cid.
+
+ * @returns UploadResult - The returned cid.
  * @throws - Will throw if the request is successful but the upload response does not contain a complete response.
  */
 export async function uploadSmallFile(
   this: S5Client,
   file: File,
   customOptions: CustomUploadOptions,
-): Promise<UploadRequestResponse> {
+): Promise<UploadResult> {
   const response = await this.uploadSmallFileRequest(file, customOptions);
 
-  return { cid: CID.decode(response.data.cid) };
+  return { cid: CID.decode(<string>response.CID) };
 }
 
 /**
@@ -143,34 +119,24 @@ export async function uploadSmallFile(
  * @param this - S5Client
  * @param file - The file to upload.
  * @param [customOptions] - Additional settings that can optionally be set.
- * @param [customOptions.endpointPath="/s5/upload"] - The relative URL path of the portal endpoint to contact.
- * @returns - The upload response.
+
+ * @returns PostS5UploadResult  - The upload response.
  */
 export async function uploadSmallFileRequest(
   this: S5Client,
   file: File,
-  customOptions?: CustomUploadOptions,
-): Promise<AxiosResponse> {
-  const opts = {
-    ...DEFAULT_UPLOAD_OPTIONS,
-    ...this.customOptions,
-    ...customOptions,
-  };
-  const formData = new FormData();
+  customOptions: CustomUploadOptions = {},
+): Promise<PostS5UploadResult> {
+  const config = optionsToConfig(this, DEFAULT_UPLOAD_OPTIONS, customOptions);
 
   file = ensureFileObjectConsistency(file);
-  if (opts.customFilename) {
-    formData.append(PORTAL_FILE_FIELD_NAME, file, opts.customFilename);
-  } else {
-    formData.append(PORTAL_FILE_FIELD_NAME, file);
-  }
 
-  return await this.executeRequest({
-    ...opts,
-    endpointPath: opts.endpointUpload,
-    method: "post",
-    data: formData,
-  });
+  return postS5Upload(
+    {
+      file: file,
+    },
+    config,
+  );
 }
 
 /* istanbul ignore next */
@@ -187,11 +153,9 @@ export async function uploadSmallFileRequest(
 export async function uploadLargeFile(
   this: S5Client,
   file: File,
-  customOptions?: CustomUploadOptions,
-): Promise<UploadRequestResponse> {
-  const response = await this.uploadLargeFileRequest(file, customOptions);
-
-  return response.data;
+  customOptions: CustomUploadOptions = {},
+): Promise<UploadResult> {
+  return await this.uploadLargeFileRequest(file, customOptions);
 }
 
 /* istanbul ignore next */
@@ -201,44 +165,32 @@ export async function uploadLargeFile(
  * @param this - S5Client
  * @param file - The file to upload.
  * @param [customOptions] - Additional settings that can optionally be set.
- * @param [customOptions.endpointLargeUpload="/s5/upload/tus"] - The relative URL path of the portal endpoint to contact.
  * @returns - The upload response.
  */
 export async function uploadLargeFileRequest(
   this: S5Client,
   file: File,
-  customOptions?: CustomUploadOptions,
-): Promise<UploadTusRequestResponse> {
-  const opts = {
-    ...DEFAULT_UPLOAD_OPTIONS,
-    ...this.customOptions,
-    ...customOptions,
-  };
+  customOptions: CustomUploadOptions = {},
+): Promise<UploadResult> {
+  const config = optionsToConfig(this, DEFAULT_UPLOAD_OPTIONS, customOptions);
 
   // Validation.
   const url = await buildRequestUrl(this, {
-    endpointPath: opts.endpointLargeUpload,
+    endpointPath: TUS_ENDPOINT,
   });
-  const headers = buildRequestHeaders(
-    undefined,
-    opts.customUserAgent,
-    opts.customCookie,
-    opts.s5ApiKey,
-  );
 
   file = ensureFileObjectConsistency(file);
-  let filename = file.name;
-  if (opts.customFilename) {
-    filename = opts.customFilename;
-  }
 
   const onProgress =
-    opts.onUploadProgress &&
+    config.onUploadProgress &&
     function (bytesSent: number, bytesTotal: number) {
       const progress = bytesSent / bytesTotal;
 
       // @ts-expect-error TS complains.
-      opts.onUploadProgress(progress, { loaded: bytesSent, total: bytesTotal });
+      config.onUploadProgress(progress, {
+        loaded: bytesSent,
+        total: bytesTotal,
+      });
     };
 
   const hasher = blake3.create({});
@@ -282,19 +234,21 @@ export async function uploadLargeFileRequest(
   }
 
   return new Promise((resolve, reject) => {
+    const filename = hash
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace("=", "");
+
     const tusOpts = {
       endpoint: url,
       //      retryDelays: opts.retryDelays,
       metadata: {
-        hash: hash
-          .toString("base64")
-          .replace(/\+/g, "-")
-          .replace(/\//g, "_")
-          .replace("=", ""),
-        filename,
+        hash: filename,
+        filename: filename,
         filetype: file.type,
       },
-      headers,
+      config: config.headers,
       onProgress,
       onBeforeRequest: function (req: HttpRequest) {
         const xhr = req.getUnderlyingObject();
@@ -311,7 +265,6 @@ export async function uploadLargeFileRequest(
           reject(new Error("'upload.url' was not set"));
           return;
         }
-
         const resCid =
           "u" +
           cid
@@ -319,8 +272,7 @@ export async function uploadLargeFileRequest(
             .replace(/\+/g, "-")
             .replace(/\//g, "_")
             .replace("=", "");
-        const resolveData = { data: { cid: CID.decode(resCid) } };
-        resolve(resolveData);
+        resolve({ cid: CID.decode(resCid) });
       },
     };
 
@@ -344,15 +296,15 @@ export async function uploadDirectory(
   this: S5Client,
   directory: Record<string, File>,
   filename: string,
-  customOptions?: CustomUploadOptions,
-): Promise<UploadRequestResponse> {
+  customOptions: CustomUploadOptions = {},
+): Promise<UploadResult> {
   const response = await this.uploadDirectoryRequest(
     directory,
     filename,
     customOptions,
   );
 
-  return { cid: CID.decode(response.data.cid) };
+  return { cid: CID.decode(<string>response.CID) };
 }
 
 /**
@@ -362,7 +314,6 @@ export async function uploadDirectory(
  * @param directory - File objects to upload, indexed by their path strings.
  * @param filename - The name of the directory.
  * @param [customOptions] - Additional settings that can optionally be set.
- * @param [customOptions.endpointPath="/s5/upload/directory"] - The relative URL path of the portal endpoint to contact.
  * @returns - The upload response.
  * @throws - Will throw if the input filename is not a string.
  */
@@ -370,45 +321,44 @@ export async function uploadDirectoryRequest(
   this: S5Client,
   directory: Record<string, File>,
   filename: string,
-  customOptions?: CustomUploadOptions,
-): Promise<AxiosResponse> {
-  const opts = {
-    ...DEFAULT_UPLOAD_OPTIONS,
-    ...this.customOptions,
-    ...customOptions,
-  };
+  customOptions: CustomUploadOptions = {},
+): Promise<BasicUploadResponse> {
+  const config = optionsToConfig(this, DEFAULT_UPLOAD_OPTIONS, customOptions);
 
   const formData = new FormData();
-  Object.entries(directory).forEach(([path, file]) => {
-    file = ensureFileObjectConsistency(file as File);
-    formData.append(path, file as File, path);
-  });
 
-  const query: { [key: string]: string | undefined } = { filename };
-  if (opts.tryFiles) {
-    query.tryfiles = JSON.stringify(opts.tryFiles);
-  }
-  if (opts.errorPages) {
-    query.errorpages = JSON.stringify(opts.errorPages);
+  for (const entry in directory) {
+    const file = ensureFileObjectConsistency(directory[entry]);
+    formData.append(entry, file, entry);
   }
 
-  return await this.executeRequest({
-    ...opts,
-    endpointPath: opts.endpointDirectoryUpload,
-    method: "post",
-    data: formData,
-    query,
-  });
+  const params = {} as PostS5UploadDirectoryParams;
+
+  if (customOptions.tryFiles) {
+    params.tryFiles = customOptions.tryFiles;
+  }
+  if (customOptions.errorPages) {
+    params.errorPages = customOptions.errorPages;
+  }
+
+  params.name = filename;
+
+  /*
+  Hack to pass the data right since OpenAPI doesn't support variable file inputs without knowing the names ahead of time.
+   */
+  config.data = formData;
+
+  return postS5UploadDirectory({}, params, config);
 }
 
 export async function uploadWebapp(
   this: S5Client,
   directory: Record<string, File>,
-  customOptions?: CustomUploadOptions,
-): Promise<UploadRequestResponse> {
+  customOptions: CustomUploadOptions = {},
+): Promise<UploadResult> {
   const response = await this.uploadWebappRequest(directory, customOptions);
 
-  return { cid: CID.decode(response.data.cid) };
+  return { cid: CID.decode(<string>response.CID) };
 }
 
 /**
@@ -423,40 +373,9 @@ export async function uploadWebapp(
 export async function uploadWebappRequest(
   this: S5Client,
   directory: Record<string, File>,
-  customOptions?: CustomUploadOptions,
-): Promise<AxiosResponse> {
-  const opts = {
-    ...DEFAULT_UPLOAD_OPTIONS,
-    ...this.customOptions,
-    ...customOptions,
-  };
-
-  const formData = new FormData();
-  Object.entries(directory).forEach(([path, file]) => {
-    file = ensureFileObjectConsistency(file as File);
-    formData.append(path, file as File, path);
-  });
-
-  const query: { [key: string]: string | undefined } = { name: "" };
-  if (opts.tryFiles) {
-    query.tryfiles = JSON.stringify(opts.tryFiles);
-  } else {
-    query.tryfiles = JSON.stringify(["index.html"]);
-  }
-
-  if (opts.errorPages) {
-    query.errorpages = JSON.stringify(opts.errorPages);
-  } else {
-    query.errorpages = JSON.stringify({ 404: "/404.html" });
-  }
-
-  return await this.executeRequest({
-    ...opts,
-    endpointPath: opts.endpointDirectoryUpload,
-    method: "post",
-    data: formData,
-    query,
-  });
+  customOptions: CustomUploadOptions = {},
+): Promise<BasicUploadResponse> {
+  return this.uploadDirectoryRequest(directory, "webapp", customOptions);
 }
 
 /**

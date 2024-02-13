@@ -11,6 +11,7 @@
     "devDependencies": {
         "@lumeweb/node-library-preset": "^0.2.7",
         "@types/ws": "^8.5.10",
+        "orval": "^6.24.0",
         "presetter": "*"
     },
     "readme": "ERROR: No README data found!",

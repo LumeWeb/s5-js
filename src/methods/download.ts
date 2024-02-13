@@ -1,8 +1,10 @@
 import { ResponseType } from "axios";
 
 import { S5Client } from "../client.js";
-import { BaseCustomOptions, DEFAULT_BASE_OPTIONS } from "../utils/options.js";
+import { CustomClientOptions, optionsToConfig } from "../utils/options.js";
 import path from "path";
+import { DEFAULT_UPLOAD_OPTIONS } from "#methods/upload.js";
+import { getS5DownloadCid, getS5MetadataCid } from "#generated/index.js";
 
 /**
  * Custom download options.
@@ -14,18 +16,13 @@ import path from "path";
  * @property [responseType] - The response type.
  * @property [subdomain=false] - Whether to return the final cid in subdomain format.
  */
-export type CustomDownloadOptions = BaseCustomOptions & {
-  endpointDownload?: string;
-  download?: boolean;
+export type CustomDownloadOptions = CustomClientOptions & {
   path?: string;
   range?: string;
   responseType?: ResponseType;
-  subdomain?: string;
 };
 
-export type CustomGetMetadataOptions = BaseCustomOptions & {
-  endpointGetMetadata?: string;
-};
+export type CustomGetMetadataOptions = CustomClientOptions & {};
 
 /**
  * The response for a get metadata request.
@@ -34,24 +31,17 @@ export type CustomGetMetadataOptions = BaseCustomOptions & {
  * @property portalUrl - The URL of the portal.
  * @property cid - 46-character cid.
  */
-export type GetMetadataResponse = {
+export type MetadataResult = {
   metadata: Record<string, unknown>;
 };
 
 export const DEFAULT_DOWNLOAD_OPTIONS = {
-  ...DEFAULT_BASE_OPTIONS,
-  endpointDownload: "/",
-  download: false,
-  path: undefined,
   range: undefined,
   responseType: undefined,
   subdomain: "",
 };
 
-const DEFAULT_GET_METADATA_OPTIONS = {
-  ...DEFAULT_BASE_OPTIONS,
-  endpointGetMetadata: "/s5/metadata",
-};
+const DEFAULT_GET_METADATA_OPTIONS = {};
 
 /**
  * Initiates a download of the content of the cid within the browser.
@@ -68,14 +58,7 @@ export async function downloadFile(
   cid: string,
   customOptions?: CustomDownloadOptions,
 ): Promise<string> {
-  const opts = {
-    ...DEFAULT_DOWNLOAD_OPTIONS,
-    ...this.customOptions,
-    ...customOptions,
-    download: true,
-  };
-
-  const url = await this.getCidUrl(cid, opts);
+  const url = await this.getCidUrl(cid, customOptions);
 
   // Download the url.
   window.location.assign(url);
@@ -96,18 +79,9 @@ export async function downloadFile(
 export async function getCidUrl(
   this: S5Client,
   cid: string,
-  customOptions?: CustomDownloadOptions,
+  customOptions: CustomDownloadOptions = {},
 ): Promise<string> {
-  const opts = {
-    ...DEFAULT_DOWNLOAD_OPTIONS,
-    ...this.customOptions,
-    ...customOptions,
-  };
-  console.log(opts);
-
-  const portalUrl = await this.portalUrl();
-
-  return path.join(portalUrl, cid);
+  return path.join(this.portalUrl, cid);
 }
 
 /**
@@ -123,35 +97,30 @@ export async function getCidUrl(
 export async function getMetadata(
   this: S5Client,
   cid: string,
-  customOptions?: CustomGetMetadataOptions,
-): Promise<GetMetadataResponse> {
-  const opts = {
-    ...DEFAULT_GET_METADATA_OPTIONS,
-    ...this.customOptions,
-    ...customOptions,
-  };
+  customOptions: CustomGetMetadataOptions = {},
+): Promise<MetadataResult> {
+  const config = optionsToConfig(
+    this,
+    DEFAULT_GET_METADATA_OPTIONS,
+    customOptions,
+  );
 
-  const response = await this.executeRequest({
-    ...opts,
-    method: "get",
-    endpointPath: opts.endpointGetMetadata,
-    extraPath: cid,
-  });
+  const response = await getS5MetadataCid(cid, config);
 
-  return { metadata: response.data };
+  return { metadata: response };
 }
 
 /**
  * Downloads in-memory data from a S5 cid.
  * @param this - S5Client
- * @param cid - 46-character cid, or a valid cid URL. Can be followed by a path. Note that the cid will not be encoded, so if your path might contain special characters, consider using `customOptions.path`.
+ * @param cid - 46-character cid, or a valid cid URL.
  * @param [customOptions] - Additional settings that can optionally be set.
  * @returns - The data
  */
 export async function downloadData(
   this: S5Client,
   cid: string,
-  customOptions?: CustomDownloadOptions,
+  customOptions: CustomDownloadOptions = {},
 ): Promise<ArrayBuffer> {
   const opts = {
     ...DEFAULT_DOWNLOAD_OPTIONS,
@@ -160,12 +129,12 @@ export async function downloadData(
     download: true,
   };
 
-  const response = await this.executeRequest({
-    ...opts,
-    method: "get",
-    extraPath: cid,
-    responseType: "arraybuffer",
-  });
+  const config = optionsToConfig(this, DEFAULT_UPLOAD_OPTIONS, customOptions);
 
-  return response.data;
+  return await (
+    await getS5DownloadCid(cid, {
+      ...config,
+      responseType: "arraybuffer",
+    })
+  ).arrayBuffer();
 }
