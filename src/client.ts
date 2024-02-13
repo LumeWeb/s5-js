@@ -17,8 +17,10 @@ import {
   uploadWebappRequest,
 } from "./methods/upload.js";
 import {
+  downloadBlob,
   downloadData,
   downloadFile,
+  downloadProof,
   getCidUrl,
   getMetadata,
 } from "./methods/download.js";
@@ -45,6 +47,8 @@ export class S5Client {
   uploadWebapp = uploadWebapp;
   downloadFile = downloadFile;
   downloadData = downloadData;
+  downloadBlob = downloadBlob;
+  downloadProof = downloadProof;
   getCidUrl = getCidUrl;
   getMetadata = getMetadata;
   // Registry
