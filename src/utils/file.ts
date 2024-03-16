@@ -1,4 +1,4 @@
-import mime from "mime/lite";
+import mime from "mime";
 import path from "path";
 
 import { trimPrefix } from "./string.js";
