@@ -5,7 +5,7 @@
     "config": {
         "tsconfig": {
             "compilerOptions": {
-                "module": "nodenext",
+                "module": "ESNext",
                 "moduleResolution": "node"
             }
         }
