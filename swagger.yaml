@@ -16,7 +16,7 @@ paths:
                   in: query
                   required: true
                   schema:
-                    type: string
+                      type: string
             responses:
                 '200':
                     description: Registration challenge
@@ -45,7 +45,7 @@ paths:
                   in: query
                   required: true
                   schema:
-                    type: string
+                      type: string
             responses:
                 '200':
                     description: Login challenge
@@ -82,6 +82,20 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/AccountStatsResponse"
+    /s5/account/pins:
+        get:
+            summary: Retrieve account pins
+            tags:
+                - account
+            responses:
+                '200':
+                    description: Account pins
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AccountPinsResponse'
+                '401':
+                    description: Unauthorized
     /s5/account/pins.bin:
         get:
             summary: Retrieve account pins
@@ -90,6 +104,8 @@ paths:
             responses:
                 '200':
                     description: Account pins
+                '401':
+                    description: Unauthorized
 
     # Upload API
     /s5/upload:
@@ -133,17 +149,17 @@ paths:
                   in: query
                   required: true
                   schema:
-                    $ref: '#/components/schemas/UploadRequestTryFiles'
+                      $ref: '#/components/schemas/UploadRequestTryFiles'
                 - name: errorPages
                   in: query
                   required: true
                   schema:
-                    $ref: '#/components/schemas/UploadRequestErrorPages'
+                      $ref: '#/components/schemas/UploadRequestErrorPages'
                 - name: name
                   in: query
                   required: true
                   schema:
-                    type: string
+                      type: string
             requestBody:
                 content:
                     multipart/form-data:
@@ -600,7 +616,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: string
+                      type: string
             responses:
                 '302':
                     description: Redirecting to discovered blob url
@@ -614,7 +630,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: string
+                      type: string
             description: >
                 * Resolvers are currently not supported
 
@@ -626,6 +642,8 @@ paths:
                         application/json:
                             schema:
                                 type: object
+                '415':
+                    description: Unsupported content type
     /s5/download/{cid}:
         get:
             summary: Download a file
@@ -636,7 +654,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: string
+                      type: string
             responses:
                 '200':
                     description: File content
@@ -657,7 +675,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: string
+                      type: string
             responses:
                 '204':
                     description: File pinned
@@ -671,7 +689,7 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: string
+                      type: string
             responses:
                 '204':
                     description: File deleted
@@ -687,19 +705,19 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: string
+                      type: string
                 - name: hash
                   in: query
                   required: true
                   schema:
-                    type: string
-                    description: This is base64 url encoded
+                      type: string
+                      description: This is base64 url encoded
                 - name: kinds
                   in: query
                   required: false
                   schema:
-                    type: string
-                    description: This is a comma separated list of kinds, which are integer identifiers.
+                      type: string
+                      description: This is a comma separated list of kinds, which are integer identifiers.
             responses:
                 '200':
                     description: Download URLs
@@ -717,8 +735,8 @@ paths:
                   in: path
                   required: true
                   schema:
-                    type: string
-                    description: This is base64 url encoded
+                      type: string
+                      description: This is base64 url encoded
             responses:
                 '200':
                     description: Storage locations
@@ -880,6 +898,20 @@ components:
                   properties:
                       stats:
                           $ref: "#/components/schemas/AccountStats"
+        AccountPinsResponse:
+            type: object
+            properties:
+                pins:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AccountPin'
+        AccountPin:
+            type: object
+            properties:
+                hash:
+                    type: string
+                mime_type:
+                    type: string
         RegistryQueryResponse:
             type: object
             properties:
