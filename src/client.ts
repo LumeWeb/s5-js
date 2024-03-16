@@ -1,10 +1,3 @@
-import axios, {
-  AxiosError,
-  AxiosProgressEvent,
-  AxiosRequestConfig,
-} from "axios";
-import type { AxiosResponse, ResponseType, Method } from "axios";
-
 import {
   uploadFile,
   uploadLargeFile,
@@ -36,6 +29,8 @@ import {
 import { CustomClientOptions } from "#utils/options.js";
 import { throwValidationError } from "#utils/validation.js";
 
+import { accountPins } from "./methods/account.js";
+
 /**
  * The S5 Client which can be used to access S5-net.
  */
@@ -56,6 +51,7 @@ export class S5Client {
   publishEntry = publishEntry;
   createEntry = createEntry;
   getEntry = getEntry;
+  accountPins = accountPins;
   // Download
   protected uploadSmallFile = uploadSmallFile;
   protected uploadSmallFileRequest = uploadSmallFileRequest;
