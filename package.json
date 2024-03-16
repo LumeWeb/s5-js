@@ -9,6 +9,7 @@
         "url": "gitea@git.lumeweb.com:LumeWeb/s5-js.git"
     },
     "devDependencies": {
+        "@changesets/cli": "^2.27.1",
         "@lumeweb/node-library-preset": "^0.2.7",
         "@types/ws": "^8.5.10",
         "orval": "^6.24.0",
