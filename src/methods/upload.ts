@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios";
+import { AxiosProgressEvent } from "axios";
 import { DetailedError, HttpRequest, Upload } from "tus-js-client";
 
 import { blake3 } from "@noble/hashes/blake3";
@@ -51,6 +51,7 @@ export type CustomUploadOptions = BaseCustomOptions & {
   // Large files.
   largeFileSize?: number;
   retryDelays?: number[];
+  onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
 };
 
 export const DEFAULT_UPLOAD_OPTIONS = {
