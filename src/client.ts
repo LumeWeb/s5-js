@@ -8,6 +8,7 @@ import {
   uploadLargeFileRequest,
   uploadWebapp,
   uploadWebappRequest,
+  getTusOptions,
 } from "./methods/upload.js";
 import {
   downloadBlob,
@@ -53,6 +54,7 @@ export class S5Client {
   getEntry = getEntry;
   accountPins = accountPins;
   // Download
+  getTusOptions = getTusOptions;
   protected uploadSmallFile = uploadSmallFile;
   protected uploadSmallFileRequest = uploadSmallFileRequest;
   protected uploadLargeFile = uploadLargeFile;

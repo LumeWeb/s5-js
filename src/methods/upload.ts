@@ -1,5 +1,10 @@
 import { AxiosProgressEvent } from "axios";
-import { DetailedError, HttpRequest, Upload } from "tus-js-client";
+import {
+  DetailedError,
+  HttpRequest,
+  Upload,
+  UploadOptions,
+} from "tus-js-client";
 
 import { blake3 } from "@noble/hashes/blake3";
 import { Buffer } from "buffer";
@@ -17,6 +22,8 @@ import {
 import { BaseCustomOptions } from "#methods/registry.js";
 import { optionsToConfig } from "#utils/options.js";
 import { buildRequestUrl } from "#request.js";
+import defer from "p-defer";
+import { Multihash } from "@lumeweb/libs5/lib/multihash.js";
 
 /**
  * The tus chunk size is (4MiB - encryptionOverhead) * dataPieces, set as default.
@@ -173,6 +180,45 @@ export async function uploadLargeFileRequest(
   file: File,
   customOptions: CustomUploadOptions = {},
 ): Promise<UploadResult> {
+  const p = defer<UploadResult>();
+
+  const options = await this.getTusOptions(
+    file,
+    {
+      onSuccess: async () => {
+        if (!upload.url) {
+          p.reject(new Error("'upload.url' was not set"));
+          return;
+        }
+
+        p.resolve({ cid });
+      },
+      onError: (error: Error | DetailedError) => {
+        // Return error body rather than entire error.
+        const res = (error as DetailedError).originalResponse;
+        const newError = res ? new Error(res.getBody().trim()) || error : error;
+        p.reject(newError);
+      },
+    },
+    customOptions,
+  );
+  const cid = CID.fromHash(
+    Multihash.fromBase64Url(<string>options.metadata?.hash).fullBytes,
+    file.size,
+    CID_TYPES.RAW,
+  );
+
+  const upload = new Upload(file, options);
+
+  return p.promise;
+}
+
+export async function getTusOptions(
+  this: S5Client,
+  file: File,
+  tusOptions: Partial<UploadOptions> = {},
+  customOptions: CustomUploadOptions = {},
+): Promise<UploadOptions> {
   const config = optionsToConfig(this, DEFAULT_UPLOAD_OPTIONS, customOptions);
 
   // Validation.
@@ -182,104 +228,41 @@ export async function uploadLargeFileRequest(
 
   file = ensureFileObjectConsistency(file);
 
-  const onProgress =
-    config.onUploadProgress &&
-    function (bytesSent: number, bytesTotal: number) {
-      const progress = bytesSent / bytesTotal;
-
-      // @ts-expect-error TS complains.
-      config.onUploadProgress(progress, {
-        loaded: bytesSent,
-        total: bytesTotal,
-      });
-    };
-
   const hasher = blake3.create({});
 
   const chunkSize = 1024 * 1024;
+
   let position = 0;
+
   while (position <= file.size) {
     const chunk = file.slice(position, position + chunkSize);
     hasher.update(new Uint8Array(await chunk.arrayBuffer()));
     position += chunkSize;
   }
+
   const b3hash = hasher.digest();
-  const hash = Buffer.concat([
-    Buffer.alloc(1, CID_HASH_TYPES.BLAKE3),
-    Buffer.from(b3hash),
-  ]);
-  const cid = Buffer.concat([
-    Buffer.alloc(1, CID_TYPES.RAW),
-    hash,
-    numberToBuffer(file.size),
-  ]);
 
-  /**
-   * convert a number to Buffer.
-   *
-   * @param value - File objects to upload, indexed by their path strings.
-   * @returns - The returned cid.
-   * @throws - Will throw if the request is successful but the upload response does not contain a complete response.
-   */
-  function numberToBuffer(value: number) {
-    const view = Buffer.alloc(16);
-    let lastIndex = 15;
-    for (let index = 0; index <= 15; ++index) {
-      if (value % 256 !== 0) {
-        lastIndex = index;
-      }
-      view[index] = value % 256;
-      value = value >> 8;
-    }
-    return view.subarray(0, lastIndex + 1);
-  }
+  const filename = new Multihash(
+    Buffer.concat([
+      Buffer.alloc(1, CID_HASH_TYPES.BLAKE3),
+      Buffer.from(b3hash),
+    ]),
+  ).toBase64Url();
 
-  return new Promise((resolve, reject) => {
-    const filename = hash
-      .toString("base64")
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace("=", "");
-
-    const tusOpts = {
-      endpoint: url,
-      //      retryDelays: opts.retryDelays,
-      metadata: {
-        hash: filename,
-        filename: filename,
-        filetype: file.type,
-      },
-      config: config.headers,
-      onProgress,
-      onBeforeRequest: function (req: HttpRequest) {
-        const xhr = req.getUnderlyingObject();
-        xhr.withCredentials = true;
-      },
-      onError: (error: Error | DetailedError) => {
-        // Return error body rather than entire error.
-        const res = (error as DetailedError).originalResponse;
-        const newError = res ? new Error(res.getBody().trim()) || error : error;
-        reject(newError);
-      },
-      onSuccess: async () => {
-        if (!upload.url) {
-          reject(new Error("'upload.url' was not set"));
-          return;
-        }
-        const resCid =
-          "u" +
-          cid
-            .toString("base64")
-            .replace(/\+/g, "-")
-            .replace(/\//g, "_")
-            .replace("=", "");
-        resolve({ cid: CID.decode(resCid) });
-      },
-    };
-
-    const upload = new Upload(file, tusOpts);
-    upload.start();
-  });
+  return {
+    endpoint: url,
+    metadata: {
+      hash: filename,
+      filename: filename,
+      filetype: file.type,
+    },
+    headers: config.headers as any,
+    onBeforeRequest: function (req: HttpRequest) {
+      const xhr = req.getUnderlyingObject();
+      xhr.withCredentials = true;
+    },
+    ...tusOptions,
+  };
 }
 
 /**
@@ -391,4 +374,32 @@ export async function uploadWebappRequest(
  */
 function ensureFileObjectConsistency(file: File): File {
   return new File([file], file.name, { type: getFileMimeType(file) });
+}
+
+/**
+ * convert a number to Buffer.
+ *
+ * @param value - File objects to upload, indexed by their path strings.
+ * @returns - The returned cid.
+ * @throws - Will throw if the request is successful but the upload response does not contain a complete response.
+ */
+function numberToBuffer(value: number) {
+  const view = Buffer.alloc(16);
+  let lastIndex = 15;
+  for (let index = 0; index <= 15; ++index) {
+    if (value % 256 !== 0) {
+      lastIndex = index;
+    }
+    view[index] = value % 256;
+    value = value >> 8;
+  }
+  return view.subarray(0, lastIndex + 1);
+}
+
+function base64Decode(data) {
+  const paddedData = data.padEnd(Math.ceil(data.length / 4) * 4, "=");
+
+  const base64 = paddedData.replace(/-/g, "+").replace(/_/g, "/");
+
+  return Buffer.from(base64, "base64");
 }
