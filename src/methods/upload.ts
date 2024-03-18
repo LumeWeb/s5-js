@@ -90,7 +90,7 @@ export async function uploadFile(
 ): Promise<any> {
   const opts = {
     ...DEFAULT_UPLOAD_OPTIONS,
-    ...this.customOptions,
+    ...this.clientOptions,
     ...customOptions,
   } as CustomUploadOptions;
 

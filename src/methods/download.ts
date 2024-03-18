@@ -52,7 +52,7 @@ const DEFAULT_GET_METADATA_OPTIONS = {};
  * Initiates a download of the content of the cid within the browser.
  *
  * @param this - S5Client
- * @param cid - 46-character cid, or a valid cid URL. Can be followed by a path. Note that the cid will not be encoded, so if your path might contain special characters, consider using `customOptions.path`.
+ * @param cid - 46-character cid, or a valid cid URL. Can be followed by a path. Note that the cid will not be encoded, so if your path might contain special characters, consider using `clientOptions.path`.
  * @param [customOptions] - Additional settings that can optionally be set.
  * @param [customOptions.endpointDownload="/"] - The relative URL path of the portal endpoint to contact.
  * @returns - The full URL that was used.
@@ -86,7 +86,7 @@ export async function getCidUrl(
   cid: string,
   customOptions: CustomDownloadOptions = {},
 ): Promise<string> {
-  const opt = { ...this.customOptions, customOptions };
+  const opt = { ...this.clientOptions, customOptions };
   return addUrlQuery(path.join(this.portalUrl, cid), {
     auth_token: opt.apiKey,
   });
@@ -132,7 +132,7 @@ export async function downloadData(
 ): Promise<ArrayBuffer> {
   const opts = {
     ...DEFAULT_DOWNLOAD_OPTIONS,
-    ...this.customOptions,
+    ...this.clientOptions,
     ...customOptions,
     download: true,
   };

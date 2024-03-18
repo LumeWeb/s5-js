@@ -37,7 +37,7 @@ export function optionsToConfig(
 
   const finalOptions = {
     ...def,
-    ...client.customOptions,
+    ...client.clientOptions,
     ...extraOptions,
   } as CustomClientOptions;
 

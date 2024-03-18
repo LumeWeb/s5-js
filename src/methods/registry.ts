@@ -58,7 +58,7 @@ export async function subscribeToEntry(
 ) {
   const opts = {
     ...DEFAULT_SUBSCRIBE_ENTRY_OPTIONS,
-    ...this.customOptions,
+    ...this.clientOptions,
     ...customOptions,
   };
 

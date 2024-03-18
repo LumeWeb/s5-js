@@ -74,10 +74,14 @@ export class S5Client {
       throwValidationError("portalUrl", portalUrl, "parameter", "string");
     }
     this._portalUrl = ensureUrl(portalUrl);
-    this._customOptions = customOptions;
+    this._clientOptions = customOptions;
   }
 
-  private _customOptions: CustomClientOptions;
+  private _clientOptions: CustomClientOptions;
+
+  get clientOptions(): CustomClientOptions {
+    return this._clientOptions;
+  }
 
   get customOptions(): CustomClientOptions {
     return this._customOptions;

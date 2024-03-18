@@ -7,7 +7,7 @@ export async function accountPins(
   customOptions: CustomClientOptions = {},
 ): Promise<AccountPinsResponse> {
   const opts = {
-    ...this.customOptions,
+    ...this.clientOptions,
     ...customOptions,
     ...{
       endpointPath: "/s5/account/pins",
