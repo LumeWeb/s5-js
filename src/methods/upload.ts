@@ -18,7 +18,7 @@ import {
   postS5UploadDirectory,
   PostS5UploadDirectoryParams,
   PostS5UploadResult,
-} from "#generated/index.js";
+} from "../generated/index.js";
 import { BaseCustomOptions } from "./registry.js";
 import { optionsToConfig } from "../utils/options.js";
 import { buildRequestUrl } from "../request.js";
