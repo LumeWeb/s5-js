@@ -21,10 +21,7 @@ import { concatBytes } from "@noble/hashes/utils";
 import { CID_HASH_TYPES } from "@lumeweb/libs5/lib/constants.js";
 import { CustomClientOptions, optionsToConfig } from "../utils/options.js";
 import { buildRequestUrl } from "../request.js";
-import {
-  getS5Registry,
-  postS5Registry,
-} from "../generated/index.js";
+import { getS5Registry, postS5Registry } from "../generated/index.js";
 import { AxiosError } from "axios";
 
 export const DEFAULT_GET_ENTRY_OPTIONS = {};
