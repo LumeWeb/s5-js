@@ -19,8 +19,8 @@ import { throwValidationError } from "../utils/validation.js";
 import { base64url } from "multiformats/bases/base64";
 import { concatBytes } from "@noble/hashes/utils";
 import { CID_HASH_TYPES } from "@lumeweb/libs5/lib/constants.js";
-import { CustomClientOptions, optionsToConfig } from "#utils/options.js";
-import { buildRequestUrl } from "#request.js";
+import { CustomClientOptions, optionsToConfig } from "../utils/options.js";
+import { buildRequestUrl } from "../request.js";
 import {
   getS5Registry,
   postS5Registry,

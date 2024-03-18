@@ -8,8 +8,8 @@ import {
   getS5DownloadCid,
   getS5MetadataCid,
 } from "../generated/index.js";
-import { addUrlQuery } from "#utils/url.js";
-import { customInstance } from "#axios.js";
+import { addUrlQuery } from "../utils/url.js";
+import { customInstance } from "../axios.js";
 
 /**
  * Custom download options.
