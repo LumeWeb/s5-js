@@ -1,5 +1,5 @@
-import {AxiosHeaders, AxiosProgressEvent, AxiosRequestConfig} from "axios";
-import {S5Client} from "../client.js";
+import { AxiosHeaders, AxiosProgressEvent, AxiosRequestConfig } from "axios";
+import { S5Client } from "../client.js";
 
 /**
  * Custom client options.
@@ -12,64 +12,63 @@ import {S5Client} from "../client.js";
  */
 
 export type CustomClientOptions = {
-    apiKey?: string;
-    customUserAgent?: string;
-    customCookie?: string;
-    onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void;
-    onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
+  apiKey?: string;
+  customUserAgent?: string;
+  customCookie?: string;
+  onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void;
+  onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
 };
 
 export function optionsToConfig(
-    client: S5Client,
-    def: CustomClientOptions,
-    ...options: CustomClientOptions[]
+  client: S5Client,
+  def: CustomClientOptions,
+  ...options: CustomClientOptions[]
 ): AxiosRequestConfig {
-    const config: AxiosRequestConfig = {};
+  const config: AxiosRequestConfig = {};
 
-    config.baseURL = client.portalUrl;
+  config.baseURL = client.portalUrl;
 
-    const extraOptions = options.reduce((acc, val) => {
-        return {
-            ...acc,
-            ...val,
-        };
-    }, options);
+  const extraOptions = options.reduce((acc, val) => {
+    return {
+      ...acc,
+      ...val,
+    };
+  }, options);
 
-    const finalOptions = {
-        ...def,
-        ...client.customOptions,
-        ...extraOptions,
-    } as CustomClientOptions;
+  const finalOptions = {
+    ...def,
+    ...client.customOptions,
+    ...extraOptions,
+  } as CustomClientOptions;
 
-    if (finalOptions?.onDownloadProgress) {
-        config.onDownloadProgress = finalOptions?.onDownloadProgress;
-    }
+  if (finalOptions?.onDownloadProgress) {
+    config.onDownloadProgress = finalOptions?.onDownloadProgress;
+  }
 
-    if (finalOptions?.onUploadProgress) {
-        config.onUploadProgress = finalOptions?.onUploadProgress;
-    }
+  if (finalOptions?.onUploadProgress) {
+    config.onUploadProgress = finalOptions?.onUploadProgress;
+  }
 
-    const headers = new AxiosHeaders(config.headers as AxiosHeaders)
+  const headers = new AxiosHeaders(config.headers as AxiosHeaders);
 
-    if (finalOptions?.customCookie) {
-        headers.set("Cookie", finalOptions.customCookie);
+  if (finalOptions?.customCookie) {
+    headers.set("Cookie", finalOptions.customCookie);
+  }
+  if (finalOptions?.customUserAgent) {
+    headers.set("User-Agent", finalOptions.customUserAgent);
+  }
 
-    }
-    if (finalOptions?.customUserAgent) {
-        headers.set("User-Agent", finalOptions.customUserAgent);
-    }
+  if (finalOptions?.apiKey) {
+    headers.set("Authorization", `Bearer ${finalOptions.apiKey}`);
+    config.withCredentials = true;
 
-    if (finalOptions?.apiKey) {
-        headers.set("Authorization", `Bearer ${finalOptions.apiKey}`);
-        config.withCredentials = true;
+    config.params = {
+      ...config.params,
+      auth_token: finalOptions?.apiKey,
+    };
+  }
 
-        config.params = {
-            ...config.params,
-            auth_token: finalOptions?.apiKey,
-        };
-    }
+  config.headers = headers;
 
-    config.headers = headers;
-
-    return config;
+  return config;
 }
