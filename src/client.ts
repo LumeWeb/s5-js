@@ -83,8 +83,8 @@ export class S5Client {
     return this._clientOptions;
   }
 
-  get customOptions(): CustomClientOptions {
-    return this._customOptions;
+  set clientOptions(value: CustomClientOptions) {
+    this._clientOptions = value;
   }
 
   private _portalUrl: string;
