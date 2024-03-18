@@ -118,7 +118,7 @@ export async function uploadSmallFile(
 ): Promise<UploadResult> {
   const response = await this.uploadSmallFileRequest(file, customOptions);
 
-  return { cid: CID.decode(<string>response.CID) };
+  return { cid: CID.decode(<string>response.cid) };
 }
 
 /**
@@ -288,7 +288,7 @@ export async function uploadDirectory(
     customOptions,
   );
 
-  return { cid: CID.decode(<string>response.CID) };
+  return { cid: CID.decode(<string>response.cid) };
 }
 
 /**
@@ -342,7 +342,7 @@ export async function uploadWebapp(
 ): Promise<UploadResult> {
   const response = await this.uploadWebappRequest(directory, customOptions);
 
-  return { cid: CID.decode(<string>response.CID) };
+  return { cid: CID.decode(<string>response.cid) };
 }
 
 /**
