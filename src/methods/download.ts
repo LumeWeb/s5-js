@@ -88,7 +88,7 @@ export async function getCidUrl(
 ): Promise<string> {
   const opt = { ...this.customOptions, customOptions };
   return addUrlQuery(path.join(this.portalUrl, cid), {
-    auth_token: opt.ApiKey,
+    auth_token: opt.apiKey,
   });
 }
 
