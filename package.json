@@ -18,7 +18,9 @@
     "readme": "ERROR: No README data found!",
     "scripts": {
         "prepare": "presetter bootstrap",
-        "build": "run build"
+        "build": "run build",
+        "patch-package": "patch-package",
+        "postinstall": "patch-package"
     },
     "dependencies": {
         "@lumeweb/libs5": "^0.1.0-develop.82",
@@ -28,6 +30,7 @@
         "mime": "^4.0.1",
         "multiformats": "^13.0.0",
         "p-defer": "^4.0.0",
+        "patch-package": "^8.0.0",
         "tus-js-client": "^4.0.0",
         "url-join": "^5.0.0",
         "url-parse": "^1.5.10"
