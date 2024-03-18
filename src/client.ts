@@ -27,8 +27,8 @@ import {
   publishEntry,
   subscribeToEntry,
 } from "./methods/registry.js";
-import { CustomClientOptions } from "#utils/options.js";
-import { throwValidationError } from "#utils/validation.js";
+import { CustomClientOptions } from "./utils/options.js";
+import { throwValidationError } from "./utils/validation.js";
 
 import { accountPins } from "./methods/account.js";
 
