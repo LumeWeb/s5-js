@@ -19,9 +19,9 @@ import {
   PostS5UploadDirectoryParams,
   PostS5UploadResult,
 } from "#generated/index.js";
-import { BaseCustomOptions } from "#methods/registry.js";
-import { optionsToConfig } from "#utils/options.js";
-import { buildRequestUrl } from "#request.js";
+import { BaseCustomOptions } from "./registry.js";
+import { optionsToConfig } from "../utils/options.js";
+import { buildRequestUrl } from "../request.js";
 import defer from "p-defer";
 import { Multihash } from "@lumeweb/libs5/lib/multihash.js";
 

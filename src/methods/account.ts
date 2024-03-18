@@ -1,6 +1,6 @@
-import { CustomClientOptions, optionsToConfig } from "#utils/options.js";
-import { S5Client } from "#client.js";
-import { AccountPinsResponse, getS5AccountPins } from "#generated/index.js";
+import { CustomClientOptions, optionsToConfig } from "../utils/options.js";
+import { S5Client } from "../client.js";
+import { AccountPinsResponse, getS5AccountPins } from "../generated/index.js";
 
 export async function accountPins(
   this: S5Client,
