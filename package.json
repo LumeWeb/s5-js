@@ -29,7 +29,8 @@
         "multiformats": "^13.0.0",
         "p-defer": "^4.0.0",
         "tus-js-client": "^4.0.0",
-        "url-join": "^5.0.0"
+        "url-join": "^5.0.0",
+        "url-parse": "^1.5.10"
     },
     "publishConfig": {
         "access": "public"
