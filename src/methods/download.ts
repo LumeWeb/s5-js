@@ -3,12 +3,11 @@ import { ResponseType } from "axios";
 import { S5Client } from "../client.js";
 import { CustomClientOptions, optionsToConfig } from "../utils/options.js";
 import path from "path";
-import { DEFAULT_UPLOAD_OPTIONS } from "#methods/upload.js";
 import {
   getS5BlobCid,
   getS5DownloadCid,
   getS5MetadataCid,
-} from "#generated/index.js";
+} from "../generated/index.js";
 import { addUrlQuery } from "#utils/url.js";
 import { customInstance } from "#axios.js";
 

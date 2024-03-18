@@ -7,7 +7,6 @@ import {
   createKeyPair,
   KeyPairEd25519,
   Packer,
-  REGISTRY_TYPES,
   SignedRegistryEntry,
 } from "@lumeweb/libs5";
 import {
@@ -25,9 +24,7 @@ import { buildRequestUrl } from "#request.js";
 import {
   getS5Registry,
   postS5Registry,
-  type RegistrySetRequest,
-} from "#generated/index.js";
-import { DEFAULT_UPLOAD_OPTIONS } from "#methods/upload.js";
+} from "../generated/index.js";
 import { AxiosError } from "axios";
 
 export const DEFAULT_GET_ENTRY_OPTIONS = {};
