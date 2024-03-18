@@ -1,4 +1,4 @@
-import { AxiosProgressEvent } from "axios";
+import {AxiosProgressEvent} from "axios";
 import {
   DetailedError,
   HttpRequest,
@@ -43,6 +43,11 @@ const PORTAL_FILE_FIELD_NAME = "file";
 
 const TUS_ENDPOINT = "/s5/upload/tus";
 
+export interface HashProgressEvent {
+    bytes: number;
+    total: number;
+}
+
 /**
  * Custom upload options.
  *
@@ -59,6 +64,7 @@ export type CustomUploadOptions = BaseCustomOptions & {
   largeFileSize?: number;
   retryDelays?: number[];
   onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
+  onHashProgress?: (progressEvent: HashProgressEvent) => void;
 };
 
 export const DEFAULT_UPLOAD_OPTIONS = {
@@ -238,6 +244,10 @@ export async function getTusOptions(
     const chunk = file.slice(position, position + chunkSize);
     hasher.update(new Uint8Array(await chunk.arrayBuffer()));
     position += chunkSize;
+    customOptions.onHashProgress?.({
+        bytes: position,
+        total: file.size,
+    })
   }
 
   const b3hash = hasher.digest();
