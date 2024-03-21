@@ -210,7 +210,6 @@ export class S5Client {
    * @returns - The data
    */
   public async downloadData(
-    this: S5Client,
     cid: string,
     customOptions: CustomDownloadOptions = {},
   ): Promise<ArrayBuffer> {
