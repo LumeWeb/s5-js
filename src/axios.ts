@@ -1,5 +1,5 @@
 import Axios, {AxiosError, AxiosRequestConfig} from "axios";
-import {S5Error} from "#client.js";
+import {S5Error} from "./client.js";
 
 export interface CancelablePromise<T> extends Promise<T> {
     cancel: () => void;
