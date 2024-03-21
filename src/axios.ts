@@ -1,10 +1,14 @@
 import Axios, {AxiosError, AxiosRequestConfig} from "axios";
 import {S5Error} from "#client.js";
 
+export interface CancelablePromise<T> extends Promise<T> {
+    cancel: () => void;
+}
+
 export const customInstance = <T>(
     config: AxiosRequestConfig,
     options?: AxiosRequestConfig,
-): Promise<T> => {
+): CancelablePromise<T> => {
     const source = Axios.CancelToken.source();
 
     /*
@@ -33,5 +37,5 @@ export const customInstance = <T>(
         source.cancel("Query was cancelled");
     };
 
-    return promise;
+    return promise as CancelablePromise<T>;
 };
