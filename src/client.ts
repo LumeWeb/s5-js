@@ -213,13 +213,6 @@ export class S5Client {
     cid: string,
     customOptions: CustomDownloadOptions = {},
   ): Promise<ArrayBuffer> {
-    const opts = {
-      ...DEFAULT_DOWNLOAD_OPTIONS,
-      ...this.clientOptions,
-      ...customOptions,
-      download: true,
-    };
-
     const config = optionsToConfig(
       this,
       DEFAULT_DOWNLOAD_OPTIONS,
