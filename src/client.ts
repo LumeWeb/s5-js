@@ -4,7 +4,7 @@ import {
   DEFAULT_DOWNLOAD_OPTIONS,
   DEFAULT_GET_METADATA_OPTIONS,
   MetadataResult,
-} from "#options/download.js";
+} from "./options/download.js";
 
 import { addUrlQuery, ensureUrl } from "./utils/url.js";
 
@@ -13,7 +13,7 @@ import {
   DEFAULT_GET_ENTRY_OPTIONS,
   DEFAULT_PUBLISH_ENTRY_OPTIONS,
   DEFAULT_SUBSCRIBE_ENTRY_OPTIONS,
-} from "#options/registry.js";
+} from "./options/registry.js";
 import { CustomClientOptions, optionsToConfig } from "./utils/options.js";
 import { throwValidationError } from "./utils/validation.js";
 import {
