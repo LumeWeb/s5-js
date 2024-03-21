@@ -57,7 +57,7 @@ import {
   DEFAULT_UPLOAD_OPTIONS,
   TUS_ENDPOINT,
   UploadResult,
-} from "#options/upload.js";
+} from "./options/upload.js";
 import {
   DetailedError,
   HttpRequest,
@@ -68,7 +68,7 @@ import { ensureFileObjectConsistency } from "./utils/file.js";
 import defer from "p-defer";
 import { Multihash } from "@lumeweb/libs5/lib/multihash.js";
 import { blake3 } from "@noble/hashes/blake3";
-import { base64urlDecode, base64urlEncode } from "#utils/encoding.js";
+import { base64urlDecode, base64urlEncode } from "./utils/encoding.js";
 
 export class S5Error extends Error {
     public statusCode: number;
