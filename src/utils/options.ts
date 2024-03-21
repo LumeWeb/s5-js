@@ -18,6 +18,7 @@ export type CustomClientOptions = {
   customCookie?: string;
   onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void;
   onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
+  httpConfig?: AxiosRequestConfig;
 };
 
 export function optionsToConfig(
@@ -29,7 +30,7 @@ export function optionsToConfig(
     | CustomRegistryOptions
   )[]
 ): AxiosRequestConfig {
-  const config: AxiosRequestConfig = {};
+  let config: AxiosRequestConfig = {};
 
   config.baseURL = client.portalUrl;
 
@@ -74,6 +75,13 @@ export function optionsToConfig(
   }
 
   config.headers = headers;
+
+  if (finalOptions?.httpConfig) {
+    config = {
+      ...config,
+      ...finalOptions.httpConfig,
+    };
+  }
 
   return config;
 }

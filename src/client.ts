@@ -71,13 +71,13 @@ import { blake3 } from "@noble/hashes/blake3";
 import { base64urlDecode, base64urlEncode } from "./utils/encoding.js";
 
 export class S5Error extends Error {
-    public statusCode: number;
+  public statusCode: number;
 
-    constructor(message: string, statusCode: number) {
-        super(message);
-        this.name = "S5Error";
-        this.statusCode = statusCode;
-    }
+  constructor(message: string, statusCode: number) {
+    super(message);
+    this.name = "S5Error";
+    this.statusCode = statusCode;
+  }
 }
 
 /**
