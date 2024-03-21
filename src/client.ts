@@ -32,9 +32,9 @@ import {
 } from "./generated/index.js";
 import path from "path";
 import { customInstance } from "./axios.js";
-import { ensureBytes, equalBytes } from "@noble/curves/abstract/utils.js";
-import { concatBytes } from "@noble/hashes/utils.js";
-import { CID_HASH_TYPES } from "@lumeweb/libs5/lib/constants.js";
+import { ensureBytes, equalBytes } from "@noble/curves/abstract/utils";
+import { concatBytes } from "@noble/hashes/utils";
+import { CID_HASH_TYPES } from "@lumeweb/libs5";
 import { buildRequestUrl } from "./request.js";
 import WS from "isomorphic-ws";
 import {
