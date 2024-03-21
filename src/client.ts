@@ -70,6 +70,16 @@ import { Multihash } from "@lumeweb/libs5/lib/multihash.js";
 import { blake3 } from "@noble/hashes/blake3";
 import { base64urlDecode, base64urlEncode } from "#utils/encoding.js";
 
+export class S5Error extends Error {
+    public statusCode: number;
+
+    constructor(message: string, statusCode: number) {
+        super(message);
+        this.name = "S5Error";
+        this.statusCode = statusCode;
+    }
+}
+
 /**
  * The S5 Client which can be used to access S5-net.
  */
