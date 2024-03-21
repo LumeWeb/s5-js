@@ -1,5 +1,6 @@
 import { AxiosHeaders, AxiosProgressEvent, AxiosRequestConfig } from "axios";
 import { S5Client } from "../client.js";
+import { BaseCustomOptions, CustomRegistryOptions } from "#options/registry.js";
 
 /**
  * Custom client options.
@@ -21,8 +22,12 @@ export type CustomClientOptions = {
 
 export function optionsToConfig(
   client: S5Client,
-  def: CustomClientOptions,
-  ...options: CustomClientOptions[]
+  def: CustomClientOptions | BaseCustomOptions | CustomRegistryOptions,
+  ...options: (
+    | CustomClientOptions
+    | BaseCustomOptions
+    | CustomRegistryOptions
+  )[]
 ): AxiosRequestConfig {
   const config: AxiosRequestConfig = {};
 
