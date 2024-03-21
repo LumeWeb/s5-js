@@ -9,7 +9,7 @@ export const customInstance = <T>(
   config: AxiosRequestConfig,
   options?: AxiosRequestConfig,
 ): CancelablePromise<T> => {
-  const source = Axios.CancelToken.source();
+  const abort = new AbortController();
 
   /*
       Hack to ensure that the data is passed to the request as an option.
@@ -22,9 +22,9 @@ export const customInstance = <T>(
 
   const instance = Axios.create({ baseURL: options?.baseURL });
   const promise = instance({
+      signal: abort.signal,
     ...config,
     ...options,
-    cancelToken: source.token,
   })
     .then(({ data }) => data)
     .catch((error) => {
@@ -39,7 +39,7 @@ export const customInstance = <T>(
 
   // @ts-ignore
   promise.cancel = () => {
-    source.cancel("Query was cancelled");
+      abort.abort("Query was cancelled");
   };
 
   return promise as CancelablePromise<T>;
