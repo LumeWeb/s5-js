@@ -328,7 +328,6 @@ export class S5Client {
   }
 
   public async publishEntry(
-    this: S5Client,
     signedEntry: SignedRegistryEntry,
     customOptions: CustomRegistryOptions = {},
   ) {
@@ -359,7 +358,6 @@ export class S5Client {
   }
 
   public async createEntry(
-    this: S5Client,
     sk: Uint8Array | KeyPairEd25519,
     cid: CID,
     revision = 0,
@@ -410,7 +408,6 @@ export class S5Client {
   }
 
   public async getEntry(
-    this: S5Client,
     publicKey: Uint8Array,
     customOptions: CustomRegistryOptions = {},
   ) {
@@ -463,7 +460,6 @@ export class S5Client {
    * @throws - Will throw if the request is successful but the upload response does not contain a complete response.
    */
   public async uploadFile(
-    this: S5Client,
     file: File,
     customOptions: CustomUploadOptions = {},
   ): Promise<any> {
@@ -490,7 +486,6 @@ export class S5Client {
      * @throws - Will throw if the request is successful but the upload response does not contain a complete response.
      */
   public async uploadSmallFile(
-    this: S5Client,
     file: File,
     customOptions: CustomUploadOptions,
   ): Promise<UploadResult> {
@@ -510,7 +505,6 @@ export class S5Client {
    * @throws - Will throw if the request is successful but the upload response does not contain a complete response.
    */
   public async uploadLargeFile(
-    this: S5Client,
     file: File,
     customOptions: CustomUploadOptions = {},
   ): Promise<UploadResult> {
@@ -518,7 +512,6 @@ export class S5Client {
   }
 
   public async getTusOptions(
-    this: S5Client,
     file: File,
     tusOptions: Partial<UploadOptions> = {},
     customOptions: CustomUploadOptions = {},
@@ -585,7 +578,6 @@ export class S5Client {
    * @throws - Will throw if the request is successful but the upload response does not contain a complete response.
    */
   public async uploadDirectory(
-    this: S5Client,
     directory: Record<string, File>,
     filename: string,
     customOptions: CustomUploadOptions = {},
@@ -609,7 +601,6 @@ export class S5Client {
    * @throws - Will throw if the input filename is not a string.
    */
   public async uploadDirectoryRequest(
-    this: S5Client,
     directory: Record<string, File>,
     filename: string,
     customOptions: CustomUploadOptions = {},
@@ -643,7 +634,6 @@ export class S5Client {
   }
 
   public async uploadWebapp(
-    this: S5Client,
     directory: Record<string, File>,
     customOptions: CustomUploadOptions = {},
   ): Promise<UploadResult> {
@@ -661,7 +651,6 @@ export class S5Client {
    * @throws - Will throw if the input filename is not a string.
    */
   public async uploadWebappRequest(
-    this: S5Client,
     directory: Record<string, File>,
     customOptions: CustomUploadOptions = {},
   ): Promise<BasicUploadResponse> {
@@ -677,7 +666,6 @@ export class S5Client {
      * @returns PostS5UploadResult  - The upload response.
      */
   private async uploadSmallFileRequest(
-    this: S5Client,
     file: File,
     customOptions: CustomUploadOptions = {},
   ): Promise<PostS5UploadResult> {
@@ -702,7 +690,6 @@ export class S5Client {
    * @returns - The upload response.
    */
   private async uploadLargeFileRequest(
-    this: S5Client,
     file: File,
     customOptions: CustomUploadOptions = {},
   ): Promise<UploadResult> {
