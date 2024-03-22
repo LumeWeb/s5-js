@@ -69,7 +69,7 @@ import defer from "p-defer";
 import {Multihash} from "@lumeweb/libs5/lib/multihash.js";
 import {blake3} from "@noble/hashes/blake3";
 import {base64urlDecode, base64urlEncode} from "./utils/encoding.js";
-import {CustomPinOptions, DEFAULT_PIN_OPTIONS} from "#options/pin.js";
+import {CustomPinOptions, DEFAULT_PIN_OPTIONS} from "./options/pin.js";
 
 export class S5Error extends Error {
     public statusCode: number;
