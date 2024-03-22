@@ -22,7 +22,7 @@ import {
     getS5AccountPins,
     getS5BlobCid,
     getS5DownloadCid,
-    getS5MetadataCid,
+    getS5MetadataCid, getS5PinCidStatus,
     getS5Registry, postS5PinCid,
     postS5Registry,
     postS5Upload,
@@ -747,5 +747,15 @@ export class S5Client {
         );
 
         await deleteS5DeleteCid(cid, config);
+    }
+
+    public async pinStatus(cid: string, customOptions: CustomPinOptions = {}) {
+        const config = optionsToConfig(
+            this,
+            DEFAULT_PIN_OPTIONS,
+            customOptions,
+        );
+
+        return await getS5PinCidStatus(cid, config);
     }
 }
