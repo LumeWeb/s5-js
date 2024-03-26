@@ -34,12 +34,12 @@ export function optionsToConfig(
 
   config.baseURL = client.portalUrl;
 
-  const extraOptions = options.reduce((acc, val) => {
+  const extraOptions= Object.values(options.reduce((acc, val) => {
     return {
       ...acc,
       ...val,
     };
-  }, options);
+  }, options)).pop();
 
   const finalOptions = {
     ...def,
