@@ -39,7 +39,7 @@ export function optionsToConfig(
       ...acc,
       ...val,
     };
-  }, options)).pop();
+  }, options)).reverse().pop();
 
   const finalOptions = {
     ...def,
