@@ -675,9 +675,7 @@ export class S5Client {
         file = ensureFileObjectConsistency(file);
 
         return postS5Upload(
-            {
-                file: file,
-            },
+            file,
             config,
         );
     }
